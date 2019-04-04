@@ -6,9 +6,10 @@ To create a high level, highly readable and easy to work with language that is o
 
 # GOBOL Language Reference
 ---------------------------------------
+
   * [Looping](#looping)
     * [PERFORM](#perform)
-  *[Conditionals](#conditionals)
+  * [Conditionals](#conditionals)
     * [EVALUATE](#evaluate)
     * [IF..ELSE](#if-else)
-  *[Date Functions](#date-functions)
+  * [Date Functions](#date-functions)
