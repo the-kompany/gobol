@@ -2,7 +2,7 @@
 ---------------------------------------
   * [Looping](#looping)
     * [PERFORM](#perform)
-  *[Conditionals](#conditionals)
+  * [Conditionals](#conditionals)
     * [EVALUATE](#evaluate)
     * [IF..ELSE](#if-else)
   *[Date Functions](#date-functions)
@@ -68,3 +68,6 @@ Perform-statement (the only looping construct).
 
 ## Date Functions
 
+=======
+  * [Date Functions](#date-functions)
+>>>>>>> master
