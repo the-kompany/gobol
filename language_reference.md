@@ -2,7 +2,7 @@
 ---------------------------------------
   * [Looping](#looping)
     * [PERFORM](#perform)
-  *[Conditionals](#conditionals)
+  * [Conditionals](#conditionals)
     * [EVALUATE](#evaluate)
     * [IF..ELSE](#if-else)
-  *[Date Functions](#date-functions)
+  * [Date Functions](#date-functions)
