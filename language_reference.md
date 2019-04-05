@@ -3,8 +3,8 @@
   * [Looping](#looping)
     * [PERFORM](#perform)
   * [Conditionals](#conditionals)
-    * [EVALUATE](#evaluate)
     * [IF..ELSE..END-IF](#if-else-end-if)
+    * [EVALUATE](#evaluate)
   * [Date Operators](#date-operators)
     * [Date Addition](#date-addition)
     * [Date Subtraction](#date-subtraction)
@@ -14,6 +14,10 @@
     * [DATE2STR](#date2str)
     * [DOWNSHIFT](#downshift)
     * [EXTRACT](#extract)
+    * [GETENV](#getenv)
+    * [ISDATE](#isdate)
+    * [ISNUMERIC](#isnumeric)
+    * [ROUND](#round)
 ---------------------------------------
 ## Looping
 The PERFORM statement is used to define loops which are executed *until* a condition is true (not while true, which is more common in other languages).
@@ -69,6 +73,25 @@ Perform-statement (the only looping construct).
 
 
 ## Conditionals
+
+## IF..ELSE..END-IF
+
+**IF..ELSE..END-IF** Evaluates a Boolean expression and branches based on the outcome of the evaluation. Functions, variables, literals and expressions can be used in the statement.
+
+**Examples:**
+
+	IF (ISNUMERIC(“HELLO”)) THEN
+		MOVE “problem” 	TO var1
+	ELSE
+		MOVE “sweet” 	TO var1
+	END-IF
+
+	IF (DOWNSHIFT(mystring) = “gobol) THEN
+		MOVE “20190401” TO MYDATE
+
+	IF (numvar > 10) THEN…
+
+	IF (ISDATE(MYDATE,"YYYYMMDD")) THEN ….
 
 ### EVALUATE
 The EVALUATE statement causes multiple conditions to be evaluated. The subsequent action of the program depends on the results of these evaluations.
@@ -163,26 +186,6 @@ The scope of execution of the EVALUATE statement is terminated when the end of s
 1. The word ANY may be used in the WHEN phrase to specify an unconditional match with the corresponding item in the subject phrase.
 1. The word NOT may be used in the WHEN phrase to negate its associated condition.
 1. The word THRU may be used in the WHEN phrase to describe a range of values. When combined with NOT, THRU describes an excluded set of values. For example, NOT 10 THRU 20 means that any object holding a value from 10 to 20, including the numbers 10 and 20, will result in a FALSE, or no match evaluation.
-
-
-## IF..ELSE..END-IF
-
-**IF..ELSE..END-IF** Evaluates a Boolean expression and branches based on the outcome of the evaluation. Functions, variables, literals and expressions can be used in the statement.
-
-**Examples:**
-
-	IF (ISNUMERIC(“HELLO”)) THEN
-		MOVE “problem” 	TO var1
-	ELSE
-		MOVE “sweet” 	TO var1
-	END-IF
-
-	IF (DOWNSHIFT(mystring) = “gobol) THEN
-		MOVE “20190401” TO MYDATE
-
-	IF (numvar > 10) THEN…
-
-	IF (ISDATE(MYDATE,"YYYYMMDD")) THEN ….
 
 
 ## Date Operators
@@ -394,3 +397,107 @@ The following examples assume the script:
 		MOVE STR2NUM(EXTRACT(R, 11, 2)) TO numvar	numvar = 13 
 	
 	(1) Field overflow.  R.F is only 4 characters long, so taking 4 characters starting at character 3 overflows the field.
+
+### GETENV
+Returns the value of an environment variable when passed the variable name. If there is no variable of the name given, a null string is returned.
+
+**Usage:**
+
+GETENV(string) -> string
+
+
+**Example:** 	
+
+	Expression                   		Result
+	MOVE GETENV("PATH") TO var			var = "C:\WINDOWS\"
+
+### ISDATE	
+
+Determine if a variable is a date with an optional date format.
+
+**Usage:** 
+
+	ISDATE(date-str) -> boolean
+		or
+	ISDATE(date-str, format-str) -> boolean
+
+*date-str* is the string to be tested for a date value.
+*format-str* is optional and if present is a string containing tokens that describe the format of date-str. See the *STR2DATE* function for information on allowable format strings.
+
+If format-str is absent, ISDATE examines the string and returns TRUE if the string is in a recognizable format that can be converted to a date using the STR2DATE function.  ISDATE can automatically recognize dates, times,  datetimes, and intervals. See the STR2DATE function for information on how dates are interpreted.
+
+**Examples:** 
+
+	Expression                   		Result
+	ISDATE("20180401","YYYYMMDD") 		True 
+	ISDATE("1995/08/31","YYYY/MM/DD") 	True 
+	ISDATE("121224","RRMMDD") 			True 
+	ISDATE("121224","HHMISS") 			True 
+	ISDATE("Sep  8,92","MON DD,YY") 	True 
+	ISDATE("  960401","YYMMDD") 		False
+	ISDATE("12-12-24","YY/MM/DD") 		False
+	ISDATE("16:12:24","HH24:MI:SS") 	True 
+	ISDATE("16:12:24","HH:MI:SS") 		False 
+	ISDATE("960401") 					True 
+	ISDATE("12/12/24") 					True 
+	ISDATE("12/12/1924") 				True 
+	ISDATE("121224") 					True 
+	ISDATE("12-Dec-24") 				True 
+	ISDATE("Sep  8,92") 				True
+	ISDATE("  960401")					True 
+	ISDATE("12-12-24") 					True 
+	ISDATE("16:12:24") 					True
+
+### ISNUMERIC 	
+Tests if a string can be converted to a numeric value. If the stringcan be successfully converted to a numeric value TRUE is returned, otherwise FALSE is returned. If TRUE is returned, then the NUMERIC function can convert the string to a numeric value without error. A numeric string may contain a decimal point, an E followed by an exponent, a single leading or trailing sign, a sign of CR or DB, and a comma as a 1000s separator. Leading and trailing spaces, asterisks (*), and dollar signs ($) are ignored. A numeric string may not contain more than one sign, more than one decimal point, or a misplaced comma separator. A null string or a string containing all spaces is interpreted as zero.
+
+
+**Usage:** 
+
+	ISNUMERIC(string) -> boolean
+	string is the string to be tested for a numeric value.
+
+**Examples:**
+
+	Expression                   	Result
+	ISNUMERIC("25") 				True 
+	ISNUMERIC("    -16    ") 		True 
+	ISNUMERIC("1.64") 				True 
+	ISNUMERIC("  ") 				True 
+	ISNUMERIC("1.64E+04") 			True 
+	ISNUMERIC("-16.4E-4") 			True 
+	ISNUMERIC("-    21") 			True 
+	ISNUMERIC("-000021") 			True 
+	ISNUMERIC("12,345,678") 		True 
+	ISNUMERIC("12,345.678") 		True 
+	ISNUMERIC("$1.64") 				True 
+	ISNUMERIC("-$1.64") 			True 
+	ISNUMERIC("44 CR") 				True 
+	ISNUMERIC("55 DB") 				True 
+	ISNUMERIC("1,2345.67") 			False 
+	ISNUMERIC("1.64E+04.2") 		False 
+	ISNUMERIC("44 AB") 				False
+	ISNUMERIC("-44 CR") 			False 
+	ISNUMERIC("-44-") 				False
+
+### ROUND 	
+Rounds a number to a specified number of digits.
+
+**Usage:** 
+
+	ROUND(number, num-digits) -> number
+	
+*number* is the number to be rounded.
+*num-digits* indicates the number of decimal digits to the right of the decimal to which number is to be rounded. If num-digits is equal to zero, number is rounded to the nearest integer. If num-digits is negative, number is rounded to the power of 10 indicated by negative num-digits.
+
+**Examples:**
+ 
+	Expression                  Result
+	ROUND(3.14159, 4) 			3.1416 
+	ROUND(3.14159, 2) 			3.14 
+	ROUND(3.14159, 6) 			3.141590 
+	ROUND(-3.14159, 4) 			-3.1416 
+	ROUND(7419.917, 0) 			7420 
+	ROUND(7419.917, -1) 		7420 
+	ROUND(7419.917, -2) 		7400 
+	ROUND(7419.917, -4) 		10000
