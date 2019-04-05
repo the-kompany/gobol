@@ -5,10 +5,14 @@
   * [Conditionals](#conditionals)
     * [EVALUATE](#evaluate)
     * [IF..ELSE..END-IF](#if-else-end-if)
+  * [Date Operators](#date-operators)
+    * [Date Addition](#date-addition)
+    * [Date Subtraction](#date-subtraction)
+    * [Date Comparison](#date-comparison)
   * [Functions](#functions)
     * [ACCEPT](#accept)
-  * [Date Operators](#date-operators)
-
+    * [DATE2STR](#date2str)
+    * [DOWNSHIFT](#downshift)
 ---------------------------------------
 ## Looping
 The PERFORM statement is used to define loops which are executed *until* a condition is true (not while true, which is more common in other languages).
@@ -127,27 +131,27 @@ The scope of execution of the EVALUATE statement is terminated when the end of s
 #### Code Examples
 **Example 1:**
 
-		EVALUATE AGE  
-			WHEN 56 THRU 99  MOVE “S” TO PROSPECT-TYPE  
-			WHEN 40 THRU 55  MOVE “M” TO PROSPECT-TYPE 
-			WHEN 21 THRU 39  MOVE “Y” TO PROSPECT-TYPE  
-			WHEN OTHER       MOVE “N” TO PROSPECT-TYPE   
-		END-EVALUATE. 
+	EVALUATE AGE  
+		WHEN 56 THRU 99  MOVE “S” TO PROSPECT-TYPE  
+		WHEN 40 THRU 55  MOVE “M” TO PROSPECT-TYPE 
+		WHEN 21 THRU 39  MOVE “Y” TO PROSPECT-TYPE  
+		WHEN OTHER       MOVE “N” TO PROSPECT-TYPE   
+	END-EVALUATE. 
 
 **Example 2:**
   
-		EVALUATE INCOME ALSO TRUE  
-			WHEN 20000 THRU 39999  ALSO RISK_CLASS = "A"  
-				SET LOW_INCOME_PROSPECT TO TRUE 
-			WHEN 40000 THRU 59999  ALSO RISK_CLASS = "A"  
-				SET MID_INCOME_PROSPECT TO TRUE 
-			WHEN 60000 THRU 999999 ALSO RISK_CLASS = "A"  
-				SET HIGH_INCOME_PROSPECT TO TRUE 
-			WHEN 60000 THRU 999999 ALSO NOT RISK_CLASS = "A"  
-				SET HIGH_INCOME_HIGH_RISK_PROSPECT TO TRUE  
-			WHEN OTHER  
-				SET UNCLASSIFIED_PROSPECT TO TRUE
-		END-EVALUATE. 
+	EVALUATE INCOME ALSO TRUE  
+		WHEN 20000 THRU 39999  ALSO RISK_CLASS = "A"  
+			SET LOW_INCOME_PROSPECT TO TRUE 
+		WHEN 40000 THRU 59999  ALSO RISK_CLASS = "A"  
+			SET MID_INCOME_PROSPECT TO TRUE 
+		WHEN 60000 THRU 999999 ALSO RISK_CLASS = "A"  
+			SET HIGH_INCOME_PROSPECT TO TRUE 
+		WHEN 60000 THRU 999999 ALSO NOT RISK_CLASS = "A"  
+			SET HIGH_INCOME_HIGH_RISK_PROSPECT TO TRUE  
+		WHEN OTHER  
+			SET UNCLASSIFIED_PROSPECT TO TRUE
+	END-EVALUATE. 
 
 **Highlights for first-time users**
 
@@ -166,31 +170,18 @@ The scope of execution of the EVALUATE statement is terminated when the end of s
 
 **Examples:**
 
-		IF (ISNUMERIC(“HELLO”)) THEN
-			MOVE “problem” 	TO var1
-		ELSE
-			MOVE “sweet” 	TO var1
-		END-IF
+	IF (ISNUMERIC(“HELLO”)) THEN
+		MOVE “problem” 	TO var1
+	ELSE
+		MOVE “sweet” 	TO var1
+	END-IF
 
-		IF (DOWNSHIFT(mystring) = “gobol) THEN
-			MOVE “20190401” TO MYDATE
+	IF (DOWNSHIFT(mystring) = “gobol) THEN
+		MOVE “20190401” TO MYDATE
 
-		IF (numvar > 10) THEN…
+	IF (numvar > 10) THEN…
 
-		IF (ISDATE(MYDATE,"YYYYMMDD")) THEN ….
-
-## Functions
-GOBOL has a number of built-in functions for date, string and file management to make coding faster. They are as follows:
-
-### ACCEPT 
-Reads a string from the user’s standard input (stdin) after displaying a prompt string.
-
-Usage ACCEPT(prompt-string) -> string
-
-**Example:**
-
-		MOVE ACCEPT("Enter your name: ") TO FIRST-NAME.
-
+	IF (ISDATE(MYDATE,"YYYYMMDD")) THEN ….
 
 
 ## Date Operators
@@ -244,21 +235,124 @@ Date comparison is done using the operators: <, <=, =, >=, >, and <>.
 A date comparison is legal between DATEs, and DATETIMEs, or between TIMEs and INTERVALs, but not between DATEs/DATETIMEs and TIMEs/INTERVALs. The following table shows the legal date compares based on the date subtype:
 
 Date1 | Date2 | Is Legal?
-------|----_--|---------- 
+------|-------|---------- 
 DATETIME | DATETIME | Yes 
-DATETIME 		DATE 			Yes 
-DATETIME 		TIME 			No 
-DATETIME 		INTERVAL 		No 
-DATE 			DATETIME 		Yes 
-DATE 			DATE 			Yes 
-DATE 			TIME 			No 
-DATE 			INTERVAL 		No 
-TIME 			DATETIME 		No 
-TIME 			DATE 			No 
-TIME 			TIME 			Yes 
-TIME 			INTERVAL 		Yes 
-INTERVAL 		DATETIME 		No 
-INTERVAL 		DATE 			No 
-INTERVAL 		TIME 			Yes 
-INTERVAL 		INTERVAL 		Yes
+DATETIME | DATE | Yes 
+DATETIME | TIME | No 
+DATETIME | INTERVAL | No 
+DATE | DATETIME | Yes 
+DATE | DATE | Yes 
+DATE | TIME | No 
+DATE | INTERVAL | No 
+TIME | DATETIME | No 
+TIME | DATE | No 
+TIME | TIME | Yes 
+TIME | INTERVAL | Yes 
+INTERVAL | DATETIME | No 
+INTERVAL | DATE | No 
+INTERVAL | TIME | Yes 
+INTERVAL | INTERVAL | Yes
+
+
+## Functions
+GOBOL has a number of built-in functions for date, string and file management to make coding faster. They are as follows:
+
+### ACCEPT 
+Reads a string from the user’s standard input (stdin) after displaying a prompt string.
+
+	Usage: ACCEPT(prompt-string) -> string
+
+**Example:**
+
+	MOVE ACCEPT("Enter your name: ") TO FIRST-NAME.
+
+### DATE2STR 		
+Converts a date, time, datetime, or interval to a string using a date format. DATE2STR is the inverse function of STR2DATE (which converts a string to a date).
+
+	Usage: MOVE DATE2STR(date, fmt-string) TO FMT-DATE
+
+*date* is the date, time, datetime, or interval type item to be converted to a string.
+
+*fmt-string* is a string containing tokens that describe the format of date-string. The tokens are the same as those used in the print PIC of a date item and the **DATE2STR** function. The allowable tokens in fmt-string are:
+
+	A.M.		AM/PM indicator with periods 
+	AM 			AM/PM indicator 
+	AY			Two character year and century where 00-99 is century
+	CC			2 digit century 
+	D			The day of week (1-7, Sun=1,Sat=7) 
+	DAY			The 9 character name of day of week (SUNDAY-SATURDAY)
+	DD			The 2 digit day number within month (1-31) 
+	D*			The 1 or 2 digit day number within month (1-31) 
+	DY			The 3 character name of day of week (SUN-SAT) 
+	HH			The 2 digit hour in 12 hour time (0112) 
+	HH12		The 2 digit hour in 12 hour time (0112) 
+	HH24		The 2 digit hour in 24 hour time (0023) 
+	H*			The 1 or 2 digit hour in 12 hour time (1-12) 
+	H*12		The 1 or 2 digit hour in 12 hour time (1-12) 
+	H*24		The 1 or 2 digit hour in 24 hour time (0-23) 
+	MI			The 2 digit minute within the hour (00-59) 
+	MM			The 2 digit month number within year (01-12) 
+	M*			The 1 or 2 digit month number within year (1-12) 
+	MON			The 3 character name of month (JAN-DEC) 
+	MONTH		The 9 character name of month (JANUARY-DECEMBER)
+	NNN... 		Number of days  (up to 9 Ns) 
+	P.M. 		AM/PM indicator with periods 
+	PM			AM/PM indicator 
+	Q			Quarter within year (1-4) 
+	SS			The 2 digit second within the minute (00-59) 
+	SSSSS		The 5 digit second within the day (086399) 
+	TTT...		Fractions of seconds (up to 9 Ts) 
+	W			The week within the month (1-5) 
+	WW			The 2 digit week within the year (0153) 
+	Y			The last digit of the year 
+	YY			The last 2 digits of the year. 
+	YYY			The last 3 digits of the year 
+	YYYY		The 4 digit year 
+	Y,YYY		Year with comma 
+	space		Space 
+	:			Colon 
+	/			Virgule 
+			-	Hyphen
+	.			Period 
+	, 			Comma 
+	; 			Semicolon 
+	"str" 		Quoted string
+
+
+Date format items are case insensitive, except that the case determines the appearance of alphabetic date items.
+
+**Examples:** 	
+
+The following examples assume the following statements:
+
+	DEFINE DTM : DATETIME 
+	MOVE DATE2STR("960401 1504","YYMMDD HH24MI") TO DTM
+
+	Expression						Result
+	DATE2STR(DTM,"YYMMDD") 			960401 
+	DATE2STR(DTM,"DD-MON-YY") 		1-APR-96
+	DATE2STR(DTM,"DD-Mon-YY") 		1-Apr-96
+	DATE2STR(DTM,"HH24:MI:SS") 		15:04:00 
+	DATE2STR(DTM,"Month DD,YY")		April 1,96 
+	DATE2STR(DTM,"Day, Mon DD")		Mon, Apr 1
+	DATE2STR(DTM,"M*/D*/YY") 		4/1/96
+
+### DOWNSHIFT	
+
+Downshifts a string. DOWNSHIFT converts all uppercase characters in a given string to lowercase characters. Can be used on a variable in place, or in conjunction to the MOVE verb to modify the target value to be downshifted.
+
+To upshift a string use the UPSHIFT function.
+
+**Usage:**
+ 	
+	MOVE DOWNSHIFT(string) TO VAR
+		or
+	DOWNSHIFT(VAR)
+
+
+**Examples:** 		
+
+	Expression				Result
+	DOWNSHIFT("Gobol") 		"gobol" 
+	DOWNSHIFT("GOBOL") 		"gobol"
 
