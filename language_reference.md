@@ -13,6 +13,7 @@
     * [ACCEPT](#accept)
     * [DATE2STR](#date2str)
     * [DOWNSHIFT](#downshift)
+    * [EXTRACT](#extract)
 ---------------------------------------
 ## Looping
 The PERFORM statement is used to define loops which are executed *until* a condition is true (not while true, which is more common in other languages).
@@ -352,7 +353,44 @@ To upshift a string use the UPSHIFT function.
 
 **Examples:** 		
 
-	Expression				Result
-	DOWNSHIFT("Gobol") 		"gobol" 
-	DOWNSHIFT("GOBOL") 		"gobol"
+	Expression					Result
+	DOWNSHIFT("Gobol")			"gobol" 
+	DOWNSHIFT("GOBOL")			"gobol"
 
+### EXTRACT	
+Used to extract data from a record or variable by position and length. The EXTRACT function requires three parameters.  The first parameter is a variable name, the second parameter is a byte index into the first parameter, and the third parameter is a length for the data to be extracted. It is possible to cast the results to another type with functions such as STR2DATE and STR2NUM using the MOVE verb during the operation.
+
+
+**Usage:** 	
+
+	EXTRACT (var, index, length) -> result
+
+
+*var* can be a defined variable, a record name or a field from a record. Note:  You must be familiar with the data type of var to get the desired results.
+
+*index* is the byte index of the first byte of data to be extracted.  The first byte is byte 1.
+
+*length* is the length of the string you want to extract. 
+
+**Examples:** 	
+
+The following examples assume the script:
+		DEFINE R : RECORD 
+				F : CHAR(4) 
+				G : CHAR(6)
+				H : CHAR(2) 
+		END 
+
+		MOVE "ABCD"   TO R.F
+		MOVE "efghij" TO R.G
+		MOVE “13”     TO R.H
+
+		Expression                   				Result
+		MOVE EXTRACT(R, 1, 3)   TO var				var = "ABC" 
+		MOVE EXTRACT(R, 3, 3)   TO var				var = "CDe" 
+		MOVE EXTRACT(R.F, 1, 3) TO var				var = "ABC" 
+		MOVE EXTRACT(R.F, 3, 3) TO var				Error(1) 
+		MOVE EXTRACT(R.G, 3, 3) TO var				var = "ghi" 
+		MOVE STR2NUM(EXTRACT(R, 11, 2)) TO numvar	numvar = 13 
+	
+	(1) Field overflow.  R.F is only 4 characters long, so taking 4 characters starting at character 3 overflows the field.
