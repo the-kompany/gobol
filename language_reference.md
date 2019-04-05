@@ -18,6 +18,11 @@
     * [ISDATE](#isdate)
     * [ISNUMERIC](#isnumeric)
     * [ROUND](#round)
+    * [STR2DATE](#str2date)
+    * [UPSHIFT](#upshift)
+  * [File Types](#file-types)
+  * [Some Psuedo Code](#some-psuedo-code)
+
 ---------------------------------------
 ## Looping
 The PERFORM statement is used to define loops which are executed *until* a condition is true (not while true, which is more common in other languages).
@@ -356,9 +361,10 @@ To upshift a string use the UPSHIFT function.
 
 **Examples:** 		
 
-	Expression					Result
-	DOWNSHIFT("Gobol")			"gobol" 
-	DOWNSHIFT("GOBOL")			"gobol"
+	Expression						Result
+	MOVE "Gobol" to VAR
+	DOWNSHIFT(VAR)					"gobol"
+	MOVE DOWNSHIFT("GOBOL") to VAR	"gobol"
 
 ### EXTRACT	
 Used to extract data from a record or variable by position and length. The EXTRACT function requires three parameters.  The first parameter is a variable name, the second parameter is a byte index into the first parameter, and the third parameter is a length for the data to be extracted. It is possible to cast the results to another type with functions such as STR2DATE and STR2NUM using the MOVE verb during the operation.
@@ -501,3 +507,287 @@ Rounds a number to a specified number of digits.
 	ROUND(7419.917, -1) 		7420 
 	ROUND(7419.917, -2) 		7400 
 	ROUND(7419.917, -4) 		10000
+
+### STR2DATE 	
+
+Converts a string to a date, time, datetime, or interval using a specified date format, or automatically recognizes a date if no format is specified. STR2DATE is the inverse function of DATE2STR (which converts a date to a string).
+
+**Usage:** 	
+
+	STR2DATE(date-str) -> date
+		or
+	STR2DATE(date-str, format-str) -> date
+	
+*date-str* is a string containing the date to be converted to a date type item.
+
+*format-str* is optional and if present contains a string of tokens that describe the format of date-str.  The tokens are the same as those used in the print PIC of a date item and the DATE2STR function.  
+
+The allowable tokens in format-str are:
+
+
+	A.M. 	AM/PM indicator with periods 
+	AM 		AM/PM indicator 
+	CC 		2 digit century 
+	D 		The day of week (1-7, Sun=1,Sat=7) 
+	DAY 	The 9 character name of day of week (SUNDAY-SATURDAY) 
+	DD 		The 2 digit day number within month (01-31) 
+	D* 		The 1 or 2 digit day number within month (1-31) 
+	DY 		The 3 character name of day of week (SUN-SAT) 
+	HH12 	The 2 digit hour in 12 hour time (0112) 
+	HH24 	The 2 digit hour in 24 hour time (0023) 
+	H*12 	The 1 or 2 digit hour in 12 hour time (1-12)
+	H*24 	The 1 or 2 digit hour in 24 hour time (0-23)
+	MI 		The 2 digit minute within the hour (00-59) 
+	MM 		The 2 digit month number within year (01-12) 
+	M* 		The 1 or 2 digit month number within year (1-12) 
+	MON 	The 3 character name of month (JAN-DEC) 
+	MONTH 	The 9 character name of month (JANUARY-DECEMBER) 
+	P.M. 	AM/PM indicator with periods 
+	PM 		AM/PM indicator 
+	SS 		The 2 digit second within the minute (00-59) 
+	SSSSS 	The 5 digit second within the day (086399) 
+	W 		The week within the month (1-5) 
+	WW 		The 2 digit week within the year (0153) 
+	YY 		The last 2 digits of the year.  If no century is specified (CC), the current century is assumed.
+	YYYY 	The 4 digit year
+
+	space 	Space 
+	: 		Colon 
+	/ 		Forward Slash 
+	- 		Hyphen 
+	. 		Period 
+	, 		Comma 
+	; 		Semicolon 
+	"str" 	Quoted string
+
+
+Date format items are case insensitive in the STR2DATE function.
+
+Items are required to be the specified length. For example the MONTH token requires a 9 character month name, so APRIL must have 4 trailing  Spaces. 
+
+If items are missing, default values are used as follows:
+
+	Default century: 	the current century. 
+	Default year: 		the current year. 
+	Default month: 		1 (January) 
+	Default day: 		1 
+	Default hour: 		0 
+	Default minute: 	0 
+	Default second: 	0
+
+If *format-str* is absent, STR2DATE examines *date-str* and converts it to a date if it is in a recognizable format. It is an error if the date-str is not in a recognizable format. The ISDATE function can be used to determine if the string is in a recognizable format. STR2DATE can automatically recognize dates, times, datetimes, and intervals.  If a string can be either a date or a time, then a date is recognized.  e.g. "121314" is interpreted as 13-Dec-2014, not 12:13:14 PM. A two digit year from 00 to 49 is interpreted to be from 2000 to 2049, and a two digit year from 50 to 99 is interpreted to be from 1950 to 1999. 
+
+Recognizable formats are:
+
+	Date formats: 
+	MM/DD/YY 
+	MM/DD/YYYY 
+	MM/DD 
+	MM-DD-YY 
+	MM-DD-YYYY 
+	MM-DD 
+	DD-MON-YY
+	DD-MON-YYYY 
+	DD-MON 
+	YYMMDD 
+	YYYYMMDD 
+	Month DD, YY 
+	Month DD, YYYY 
+	Month DD
+
+	Time formats: 
+	HH24:MI 
+	HH24:MI:SS 	AM, PM, A.M. or P.M. may follow 
+
+	Datetime formats: 
+	date time 		Date in one of the above formats followed by a time in one of the above formats.
+
+
+**Examples:**
+ 
+	Expression                   			Result
+	STR2DATE("180801","YYMMDD") 			01-AUG-2018
+	STR2DATE("121224","HHMISS") 			12:12:24 PM 
+	STR2DATE("Sep  8,1992","MON DD,YYYY") 	08-SEP-1992 
+	STR2DATE("180704") 						04-JUL-2018 
+	STR2DATE("11/12/24") 					12-DEC-2024 
+	STR2DATE("12/12/1924") 					12-DEC-1924 
+	STR2DATE("121224") 						12-DEC-2024 
+	STR2DATE("12121964") 					12-DEC-1964
+	STR2DATE("12-Dec-24") 					12-DEC-2024 
+	STR2DATE("  130401") 					01-APR-2013 
+	STR2DATE("12-12-24") 					12-DEC-2024 
+	STR2DATE("12:12:24") 					12:12:24 PM 
+	STR2DATE("12") 							12 Days 
+	STR2DATE("12 4:14") 					12 Days 4 Hours 14 Minutes 
+	STR2DATE("9/8/14 17:21") 				08-SEP-2014 5:21 PM 
+	STR2DATE("May") 						* Error
+
+### UPSHIFT	
+UPSHIFT converts all lowercase characters in a given string to uppercase characters. Can be used on a variable in place, or in conjunction to the MOVE verb to modify the target value to be shifted. Default behavior is to upshift all characters in the String, but the parameters EACH or FIRST modify the behavior. EACH will upshift the first character of each string after a whitespace and the First character. Specifying FIRST will upshift just the first character.
+
+**Usage:** 	
+
+	MOVE UPSHIFT(string) TO VAR
+		or
+	MOVE UPSHIFT(string,FIRST) TO VAR
+
+**Examples:**
+ 		
+	Expression											Result
+	MOVE "Gobol" to VAR									
+	UPSHIFT(VAR)										"GOBOL"
+	MOVE “george allan smith” 	TO VAR					“george allan smith”
+	MOVE UPSHIFT(“george allan smith”) TO VAR			“GEORGE ALLAN SMITH”
+	MOVE UPSHIFT(“george allan smith”,EACH) TO VAR		“George Allan Smith”
+	MOVE UPSHIFT(“george allan smith”,FIRST) TO VAR		“George allan smith”
+
+## FILE TYPES
+
+	CSV 
+	[DELIM=delimiter-character]
+	[QUOTE=quotation-character]
+	[ESCAPE=escape-character]
+	[STRIP=strip-character]
+
+*delimiter-character* is a single character that specifies how the fields are to be delimited in the output. If the delimiter is a space, it needs to be enclosed in quotation marks. The default delimiter-character is a comma (,). quotation-character is a single character that specifies how fields that contain the delimiter-character or quote-character are grouped into a single field. When a field that contains either the delimiter-character or the quote-character is written, it is enclosed in the quote-character. The default quote-character is a double quote (").
+
+*escape-character* determines how the quote-character is handled in a quoted field. Fields that contain the quote-character are output surrounded by the quote-character and each time the quote-character actually occurs in the field, it is preceded by the escape-character.
+The default escape-character is a double quote (").
+
+*strip-character* indicates a character that is stripped at the beginning and end of each field. The default strip-character is a space. To indicate no characters are stripped, use STRIP="".
+
+
+	FIXED <fixed width fields>
+	SQL
+	NOSQL
+	JSON
+	BSON
+
+### RANDOM DESIGN NOTES, SOME OF WHICH ARE ABOVE
+
+	RECORD MYTHING
+		// GOBOL NAME, TYPE, SOURCE INDEX
+		ID	INT		“id”
+		NAME	STRING	“name:first”
+	END
+	DEFINE MYFILE “c:\stuff.csv”
+
+	DEFINE MYRECORD : FORMAT MYTHING
+	PERFORM READ MYFILE INTO MYRECORD UNTIL EOF
+		DISPLAY MYRECORD.ID
+	END-PERFORM
+
+What about implementing threading so that you could read multiple input files into memory at the same time and then work on them there?
+
+
+UNSTRING
+Ex.	unstring input-buffer delimited by “,” into record-structure
+
+INITIALIZE record-structure/variable //sets strings to spaces and numbers to zero
+
+IMPORT <file-name> [CSV | JSON | database connection string/table ]
+// this is part of the commercial module that would be in the Orsini GUI that will generate your record structure layout for you. In the command line version it would pull in the file, in the case of a CSV it assumes that line 1 has headers, if it doesn’t have headers, then you are screwed on that. The interpreter should have a basic editor in it or a plug in for someone other editor, but it needs to be able to save.
+
+
+INSPECT <string> CONVERTING <value> TO <value> // this will allow you to change the length of things, so if you want to turn “ABC” to nothing you could do INSPECT MY-VAR CONVERTING “ABC” TO “”. This would not be a null. It is a way to strip things out as well. What about keywords like SYMBOLS, ALPHABETIC, ALPHANUMERIC and NUMERIC, for example if you want a phone number stripped of any symbols you could convert SYMBOLS to “”.
+
+Make use of dataframes with this golang lib https://godoc.org/github.com/akualab/dataframe
+
+
+Functions
+A function can be part of a MOVE statement or stand-alone on a field that already contains the value.
+
+MOVE STR2DATE(DATE-STRING) TO DATE-FIELD // this is a SQL DB date type field
+DATE2STR // same thing about date type
+RTRIM // remove trailing spaces
+LTRIM // remove leading spaces
+TRIM // remove leading and trailing spaces
+
+SORT // apply to tables and files, look at cobol layout)
+Move function(plot(<defined file.record.field>,<array>)) to kounter //will read the defined file and total all unique values for field in record and populate an array with field value and count of values.
+
+MOVE UPSHIFT(STRING[All,First,Each]) TO NEW-FIELD // will upshift entire string by default or ‘all’ will upshift the first character of each word or ‘first’ will upshift just the first letter in the string. If NEW-FIELD is the same as STRING, then it will upshift the variable in place.
+
+MOVE UPSHIFT(LTRIM(STRING)) TO NEW-FIELD
+
+MOVE UNSTRING MY-STRING DELIMITED BY “,” TO VAR1
+
+MOVE STR2DATE(VAR(DATE FORMAT) TO DATE-VAR // this lets you specify the date format in the string that will then be converted to a date type, so like YYYYMMDD or maybe it is “Month, day  year”.
+
+
+MOVE EXPORT(ARRAY, <DELIMITER>, [NEW, APPEND OVERWRITE]) TO OUTPUT-FILE // will take the ARRAY and write it out one record at a time to OUTPUT-FILE, the optional flags will create, overwrite or append the file. Default behavior is NEW. A delimiter character will insert that between each field, this is useful for an export. Maybe an array should apply to a database table, which would then require selection criteria, need to think about how to lump functions together. Maybe the “from” source can even be the file/record structure.
+
+MOVE CORRESPONDING RECORD1 TO RECORD2 //this will match the field names up between the two record structures and copy all the fields from RECORD1 that have the same names in RECORD2
+
+## Some Pseudo Code
+This example reads a tab delimited file, standardizes some input fields and writes it to a SQL type database. The database is not defined in this sample.
+
+	BEGIN
+	RECORD VOTER_ROLLS BEGIN
+		lVoterUniqueID
+		sAffNumber
+		szStateVoterID
+		sVoterTitle
+		szNameLast
+		szNameFirst
+		szNameMiddle
+		sNameSuffix
+		szSitusAddress
+		szSitusCity
+		sSitusState
+		sSitusZip
+		sHouseNum
+		sUnitAbbr
+		sUnitNum
+		szStreetName
+		sStreetSuffix
+		szMailAddress1
+		szMailAddress2
+		szMailAddress3
+		szMailAddress4
+		szMailZip
+		szPhone
+		szEmailAddress
+		dtBirthDate
+		sBirthPlace
+		dtRegDate
+		dtOrigRegDate
+		dtLastUpdate_dt
+		sStatusCode
+		szStatusReasonDesc
+		sUserCode1
+		sUserCode2
+		szPartyName
+		szAVStatusAbbr
+		szAVStatusDesc
+		szPrecinctName
+		sPrecinctID
+		sPrecinctPortion
+		sDistrictID_0
+		iSubDistrict_0
+		szDistrictName_0
+	END-RECORD
+
+	OPEN INPUT VR TAB VOTER_ROLLS	// this opens an input file that is TAB delimited and uses the VOTER_ROLLS record definition for a record structure called VR.
+	OPEN OUTPUT table		// this is the output database table, which isn’t designed yet
+	PERFORM READ VR UNTIL EOF
+		INITIALIZE table.RECORD	// set all fields to default values in the database table
+		move corresponding VR.RECORD  					to table.RECORD		// this will match up the field names between the source and destination and copy all the fields
+		move STR2DATE(VR.dtBirthDate, "MM/DD/YYYY") 	to table.BirthDate	// this takes a string date and format information and casts it to a database date type
+		move STR2DATE(VR.dtRegDate, "MM/DD/YYYY") 		to table.RegDate
+		move STR2DATE(VR.dtOrigRegDate, "MM/DD/YYYY") 	to table.OrigRegDate
+		move STR2DATE(VR.dtLastUpdateDt, "MM/DD/YYYY") 	to table.LastUpdateDt
+
+		UPSHIFT(DOWNSHIFT(table.szNameLast),FIRST)		// downshift entire string and then upshift the first character of the string, the FIRST is optional, default is ALL
+		UPSHIFT(DOWNSHIFT(table.szNameFirst),FIRST)
+		UPSHIFT(DOWNSHIFT(table.szNameMiddle),FIRST)
+		UPSHIFT(DOWNSHIFT(table.szMailAddress1,EACH)	// downshift entire string, then upshift the first letter of EACH word in the string 
+		UPSHIFT(table.sSitusState)
+		DOWNSHIFT(table.szEmailAddress)	// standardize emails as lowercase
+		INSPECT table.szPhone CONVERTING SYMBOLS TO "" 	// we want to remove all non numeric symbols from the phone number
+		WRITE table.RECORD 
+	END-PERFORM
+
+	stop run
+
