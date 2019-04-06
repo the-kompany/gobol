@@ -107,8 +107,8 @@ EVALUATE extends the power of the typical CASE construct by allowing multiple da
 
 	
 	EVALUATE {subject}  [ ALSO {subject} ] ...  
-             	 {TRUE   }         {TRUE   }  
-            	 {FALSE  }         {FALSE  }  
+             	{TRUE   }         {TRUE   }  
+            	{FALSE  }         {FALSE  }  
     
      { { WHEN obj-phrase [ ALSO obj-phrase ] ... } ...  
                 statement-1 } ...  
