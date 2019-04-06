@@ -32,10 +32,10 @@ The PERFORM statement is used to define loops which are executed *until* a condi
 Perform-statement (the only looping construct).
 
 
-			[ times-phrase   ]
+		[ times-phrase   ]
 	PERFORM	[ until-phrase   ] imperative-statement-1
-			[ varying-phrase ]
-			[ read-phrase    ]
+		[ varying-phrase ]
+		[ read-phrase    ]
 	END-PERFORM
  
 	times-phrase.
@@ -48,26 +48,26 @@ Perform-statement (the only looping construct).
  
 	varying-phrase.
 		[ [ WITH ] TEST { BEFORE } ]
-                        { AFTER  }
+				{ AFTER  }
  
  		VARYING	{ identifier-2 }
-				{ index-name-2 }
+			{ index-name-2 }
 		FROM	{ identifier-3 }
-                { index-name-3 }
-                { literal-3    }
+                	{ index-name-3 }
+               		{ literal-3    }
  
 		[ BY	{ identifier-4 } ]
-                { literal-4    }
+                	{ literal-4    }
  
 		UNTIL condition-1
  			[ AFTER	{ identifier-2 }
-					{ index-name-2 }
+				{ index-name-2 }
  
-		FROM 		{ identifier-3 }
+		FROM 	{ identifier-3 }
                    	{ index-name-3 }
                    	{ literal-3    }
 
-			[ BY 	{ identifier-4 } ]
+		[ BY 	{ identifier-4 } ]
                    	{ literal-4    }
 		UNTIL condition-1 ] ...
 
@@ -86,13 +86,13 @@ Perform-statement (the only looping construct).
 **Examples:**
 
 	IF (ISNUMERIC(“HELLO”)) THEN
-		MOVE “problem” 	TO var1
+	   MOVE “problem” 	TO var1
 	ELSE
-		MOVE “sweet” 	TO var1
+	   MOVE “sweet” 	TO var1
 	END-IF
 
 	IF (DOWNSHIFT(mystring) = “gobol) THEN
-		MOVE “20190401” TO MYDATE
+	   MOVE “20190401” TO MYDATE
 
 	IF (numvar > 10) THEN…
 
@@ -106,9 +106,9 @@ The EVALUATE statement is very similar to the CASE construct common in many othe
 EVALUATE extends the power of the typical CASE construct by allowing multiple data items and conditions to be named in the EVALUATE phrase
 
 	
-	EVALUATE  {subject}  [ ALSO {subject} ] ...  
-             	TRUE   }         {TRUE   }  
-            	 FALSE  }         {FALSE  }  
+	EVALUATE {subject}  [ ALSO {subject} ] ...  
+             	 {TRUE   }         {TRUE   }  
+            	 {FALSE  }         {FALSE  }  
     
      { { WHEN obj-phrase [ ALSO obj-phrase ] ... } ...  
                 statement-1 } ...  
@@ -285,46 +285,46 @@ Converts a date, time, datetime, or interval to a string using a date format. DA
 *fmt-string* is a string containing tokens that describe the format of date-string. The tokens are the same as those used in the print PIC of a date item and the **DATE2STR** function. The allowable tokens in fmt-string are:
 
 	A.M.		AM/PM indicator with periods 
-	AM 			AM/PM indicator 
-	AY			Two character year and century where 00-99 is century
-	CC			2 digit century 
-	D			The day of week (1-7, Sun=1,Sat=7) 
-	DAY			The 9 character name of day of week (SUNDAY-SATURDAY)
-	DD			The 2 digit day number within month (1-31) 
-	D*			The 1 or 2 digit day number within month (1-31) 
-	DY			The 3 character name of day of week (SUN-SAT) 
-	HH			The 2 digit hour in 12 hour time (0112) 
+	AM 		AM/PM indicator 
+	AY		Two character year and century where 00-99 is century
+	CC		2 digit century 
+	D		The day of week (1-7, Sun=1,Sat=7) 
+	DAY		The 9 character name of day of week (SUNDAY-SATURDAY)
+	DD		The 2 digit day number within month (1-31) 
+	D*		The 1 or 2 digit day number within month (1-31) 
+	DY		The 3 character name of day of week (SUN-SAT) 
+	HH		The 2 digit hour in 12 hour time (0112) 
 	HH12		The 2 digit hour in 12 hour time (0112) 
 	HH24		The 2 digit hour in 24 hour time (0023) 
-	H*			The 1 or 2 digit hour in 12 hour time (1-12) 
+	H*		The 1 or 2 digit hour in 12 hour time (1-12) 
 	H*12		The 1 or 2 digit hour in 12 hour time (1-12) 
 	H*24		The 1 or 2 digit hour in 24 hour time (0-23) 
-	MI			The 2 digit minute within the hour (00-59) 
-	MM			The 2 digit month number within year (01-12) 
-	M*			The 1 or 2 digit month number within year (1-12) 
-	MON			The 3 character name of month (JAN-DEC) 
+	MI		The 2 digit minute within the hour (00-59) 
+	MM		The 2 digit month number within year (01-12) 
+	M*		The 1 or 2 digit month number within year (1-12) 
+	MON		The 3 character name of month (JAN-DEC) 
 	MONTH		The 9 character name of month (JANUARY-DECEMBER)
 	NNN... 		Number of days  (up to 9 Ns) 
 	P.M. 		AM/PM indicator with periods 
-	PM			AM/PM indicator 
-	Q			Quarter within year (1-4) 
-	SS			The 2 digit second within the minute (00-59) 
+	PM		AM/PM indicator 
+	Q		Quarter within year (1-4) 
+	SS		The 2 digit second within the minute (00-59) 
 	SSSSS		The 5 digit second within the day (086399) 
 	TTT...		Fractions of seconds (up to 9 Ts) 
-	W			The week within the month (1-5) 
-	WW			The 2 digit week within the year (0153) 
-	Y			The last digit of the year 
-	YY			The last 2 digits of the year. 
-	YYY			The last 3 digits of the year 
+	W		The week within the month (1-5) 
+	WW		The 2 digit week within the year (0153) 
+	Y		The last digit of the year 
+	YY		The last 2 digits of the year. 
+	YYY		The last 3 digits of the year 
 	YYYY		The 4 digit year 
 	Y,YYY		Year with comma 
 	space		Space 
-	:			Colon 
-	/			Virgule 
-			-	Hyphen
-	.			Period 
-	, 			Comma 
-	; 			Semicolon 
+	:		Colon 
+	/		Forward slash 
+	-		Hyphen
+	.		Period 
+	,		Comma 
+	;		Semicolon 
 	"str" 		Quoted string
 
 
@@ -337,7 +337,7 @@ The following examples assume the following statements:
 	DEFINE DTM : DATETIME 
 	MOVE DATE2STR("960401 1504","YYMMDD HH24MI") TO DTM
 
-	Expression						Result
+	Expression				Result
 	DATE2STR(DTM,"YYMMDD") 			960401 
 	DATE2STR(DTM,"DD-MON-YY") 		1-APR-96
 	DATE2STR(DTM,"DD-Mon-YY") 		1-Apr-96
@@ -361,9 +361,9 @@ To upshift a string use the UPSHIFT function.
 
 **Examples:** 		
 
-	Expression						Result
+	Expression			Result
 	MOVE "Gobol" to VAR
-	DOWNSHIFT(VAR)					"gobol"
+	DOWNSHIFT(VAR)			"gobol"
 	MOVE DOWNSHIFT("GOBOL") to VAR	"gobol"
 
 ### EXTRACT	
@@ -394,12 +394,12 @@ The following examples assume the script:
 		MOVE "efghij" TO R.G
 		MOVE “13”     TO R.H
 
-		Expression                   				Result
-		MOVE EXTRACT(R, 1, 3)   TO var				var = "ABC" 
-		MOVE EXTRACT(R, 3, 3)   TO var				var = "CDe" 
-		MOVE EXTRACT(R.F, 1, 3) TO var				var = "ABC" 
-		MOVE EXTRACT(R.F, 3, 3) TO var				Error(1) 
-		MOVE EXTRACT(R.G, 3, 3) TO var				var = "ghi" 
+		Expression                   			Result
+		MOVE EXTRACT(R, 1, 3)   TO var			var = "ABC" 
+		MOVE EXTRACT(R, 3, 3)   TO var			var = "CDe" 
+		MOVE EXTRACT(R.F, 1, 3) TO var			var = "ABC" 
+		MOVE EXTRACT(R.F, 3, 3) TO var			Error(1) 
+		MOVE EXTRACT(R.G, 3, 3) TO var			var = "ghi" 
 		MOVE STR2NUM(EXTRACT(R, 11, 2)) TO numvar	numvar = 13 
 	
 	(1) Field overflow.  R.F is only 4 characters long, so taking 4 characters starting at character 3 overflows the field.
@@ -415,7 +415,7 @@ GETENV(string) -> string
 **Example:** 	
 
 	Expression                   		Result
-	MOVE GETENV("PATH") TO var			var = "C:\WINDOWS\"
+	MOVE GETENV("PATH") TO var		var = "C:\WINDOWS\"
 
 ### ISDATE	
 
@@ -437,22 +437,22 @@ If format-str is absent, ISDATE examines the string and returns TRUE if the stri
 	Expression                   		Result
 	ISDATE("20180401","YYYYMMDD") 		True 
 	ISDATE("1995/08/31","YYYY/MM/DD") 	True 
-	ISDATE("121224","RRMMDD") 			True 
-	ISDATE("121224","HHMISS") 			True 
+	ISDATE("121224","RRMMDD") 		True 
+	ISDATE("121224","HHMISS") 		True 
 	ISDATE("Sep  8,92","MON DD,YY") 	True 
 	ISDATE("  960401","YYMMDD") 		False
 	ISDATE("12-12-24","YY/MM/DD") 		False
 	ISDATE("16:12:24","HH24:MI:SS") 	True 
 	ISDATE("16:12:24","HH:MI:SS") 		False 
-	ISDATE("960401") 					True 
-	ISDATE("12/12/24") 					True 
-	ISDATE("12/12/1924") 				True 
-	ISDATE("121224") 					True 
-	ISDATE("12-Dec-24") 				True 
-	ISDATE("Sep  8,92") 				True
-	ISDATE("  960401")					True 
-	ISDATE("12-12-24") 					True 
-	ISDATE("16:12:24") 					True
+	ISDATE("960401") 			True 
+	ISDATE("12/12/2)			True 
+	ISDATE("12/12/1924") 			True 
+	ISDATE("121224") 			True 
+	ISDATE("12-Dec-24") 			True 
+	ISDATE("Sep  8,92") 			True
+	ISDATE("  960401")			True 
+	ISDATE("12-12-24") 			True 
+	ISDATE("16:12:24") 			True
 
 ### ISNUMERIC 	
 Tests if a string can be converted to a numeric value. If the stringcan be successfully converted to a numeric value TRUE is returned, otherwise FALSE is returned. If TRUE is returned, then the NUMERIC function can convert the string to a numeric value without error. A numeric string may contain a decimal point, an E followed by an exponent, a single leading or trailing sign, a sign of CR or DB, and a comma as a 1000s separator. Leading and trailing spaces, asterisks (*), and dollar signs ($) are ignored. A numeric string may not contain more than one sign, more than one decimal point, or a misplaced comma separator. A null string or a string containing all spaces is interpreted as zero.
@@ -466,25 +466,25 @@ Tests if a string can be converted to a numeric value. If the stringcan be succe
 **Examples:**
 
 	Expression                   	Result
-	ISNUMERIC("25") 				True 
-	ISNUMERIC("    -16    ") 		True 
-	ISNUMERIC("1.64") 				True 
-	ISNUMERIC("  ") 				True 
-	ISNUMERIC("1.64E+04") 			True 
-	ISNUMERIC("-16.4E-4") 			True 
-	ISNUMERIC("-    21") 			True 
-	ISNUMERIC("-000021") 			True 
-	ISNUMERIC("12,345,678") 		True 
-	ISNUMERIC("12,345.678") 		True 
-	ISNUMERIC("$1.64") 				True 
-	ISNUMERIC("-$1.64") 			True 
-	ISNUMERIC("44 CR") 				True 
-	ISNUMERIC("55 DB") 				True 
-	ISNUMERIC("1,2345.67") 			False 
-	ISNUMERIC("1.64E+04.2") 		False 
-	ISNUMERIC("44 AB") 				False
-	ISNUMERIC("-44 CR") 			False 
-	ISNUMERIC("-44-") 				False
+	ISNUMERIC("25") 		True 
+	ISNUMERIC("    -16    ") 	True 
+	ISNUMERIC("1.64") 		True 
+	ISNUMERIC("  ") 		True 
+	ISNUMERIC("1.64E+04") 		True 
+	ISNUMERIC("-16.4E-4") 		True 
+	ISNUMERIC("-    21") 		True 
+	ISNUMERIC("-000021") 		True 
+	ISNUMERIC("12,345,678") 	True 
+	ISNUMERIC("12,345.678") 	True 
+	ISNUMERIC("$1.64") 		True 
+	ISNUMERIC("-$1.64") 		True 
+	ISNUMERIC("44 CR") 		True 
+	ISNUMERIC("55 DB") 		True 
+	ISNUMERIC("1,2345.67") 		False 
+	ISNUMERIC("1.64E+04.2") 	False 
+	ISNUMERIC("44 AB") 		False
+	ISNUMERIC("-44 CR") 		False 
+	ISNUMERIC("-44-") 		False
 
 ### ROUND 	
 Rounds a number to a specified number of digits.
@@ -498,15 +498,15 @@ Rounds a number to a specified number of digits.
 
 **Examples:**
  
-	Expression                  Result
-	ROUND(3.14159, 4) 			3.1416 
-	ROUND(3.14159, 2) 			3.14 
-	ROUND(3.14159, 6) 			3.141590 
-	ROUND(-3.14159, 4) 			-3.1416 
-	ROUND(7419.917, 0) 			7420 
-	ROUND(7419.917, -1) 		7420 
-	ROUND(7419.917, -2) 		7400 
-	ROUND(7419.917, -4) 		10000
+	Expression		Result
+	ROUND(3.14159, 4) 	3.1416 
+	ROUND(3.14159, 2)	3.14 
+	ROUND(3.14159, 6)	3.141590 
+	ROUND(-3.14159, 4) 	-3.1416 
+	ROUND(7419.917, 0) 	7420 
+	ROUND(7419.917, -1) 	7420 
+	ROUND(7419.917, -2) 	7400 
+	ROUND(7419.917, -4) 	10000
 
 ### STR2DATE 	
 
@@ -526,38 +526,38 @@ The allowable tokens in format-str are:
 
 
 	A.M. 	AM/PM indicator with periods 
-	AM 		AM/PM indicator 
-	CC 		2 digit century 
-	D 		The day of week (1-7, Sun=1,Sat=7) 
+	AM 	AM/PM indicator 
+	CC 	2 digit century 
+	D 	The day of week (1-7, Sun=1,Sat=7) 
 	DAY 	The 9 character name of day of week (SUNDAY-SATURDAY) 
-	DD 		The 2 digit day number within month (01-31) 
-	D* 		The 1 or 2 digit day number within month (1-31) 
-	DY 		The 3 character name of day of week (SUN-SAT) 
+	DD 	The 2 digit day number within month (01-31) 
+	D* 	The 1 or 2 digit day number within month (1-31) 
+	DY 	The 3 character name of day of week (SUN-SAT) 
 	HH12 	The 2 digit hour in 12 hour time (0112) 
 	HH24 	The 2 digit hour in 24 hour time (0023) 
 	H*12 	The 1 or 2 digit hour in 12 hour time (1-12)
 	H*24 	The 1 or 2 digit hour in 24 hour time (0-23)
-	MI 		The 2 digit minute within the hour (00-59) 
-	MM 		The 2 digit month number within year (01-12) 
-	M* 		The 1 or 2 digit month number within year (1-12) 
+	MI 	The 2 digit minute within the hour (00-59) 
+	MM 	The 2 digit month number within year (01-12) 
+	M* 	The 1 or 2 digit month number within year (1-12) 
 	MON 	The 3 character name of month (JAN-DEC) 
 	MONTH 	The 9 character name of month (JANUARY-DECEMBER) 
 	P.M. 	AM/PM indicator with periods 
-	PM 		AM/PM indicator 
-	SS 		The 2 digit second within the minute (00-59) 
+	PM 	AM/PM indicator 
+	SS 	The 2 digit second within the minute (00-59) 
 	SSSSS 	The 5 digit second within the day (086399) 
-	W 		The week within the month (1-5) 
-	WW 		The 2 digit week within the year (0153) 
-	YY 		The last 2 digits of the year.  If no century is specified (CC), the current century is assumed.
+	W 	The week within the month (1-5) 
+	WW 	The 2 digit week within the year (0153) 
+	YY 	The last 2 digits of the year.  If no century is specified (CC), the current century is assumed.
 	YYYY 	The 4 digit year
 
 	space 	Space 
-	: 		Colon 
-	/ 		Forward Slash 
-	- 		Hyphen 
-	. 		Period 
-	, 		Comma 
-	; 		Semicolon 
+	: 	Colon 
+	/ 	Forward Slash 
+	- 	Hyphen 
+	. 	Period 
+	, 	Comma 
+	; 	Semicolon 
 	"str" 	Quoted string
 
 
@@ -605,23 +605,23 @@ Recognizable formats are:
 
 **Examples:**
  
-	Expression                   			Result
-	STR2DATE("180801","YYMMDD") 			01-AUG-2018
-	STR2DATE("121224","HHMISS") 			12:12:24 PM 
+	Expression                   		Result
+	STR2DATE("180801","YYMMDD") 		01-AUG-2018
+	STR2DATE("121224","HHMISS") 		12:12:24 PM 
 	STR2DATE("Sep  8,1992","MON DD,YYYY") 	08-SEP-1992 
-	STR2DATE("180704") 						04-JUL-2018 
-	STR2DATE("11/12/24") 					12-DEC-2024 
-	STR2DATE("12/12/1924") 					12-DEC-1924 
-	STR2DATE("121224") 						12-DEC-2024 
-	STR2DATE("12121964") 					12-DEC-1964
-	STR2DATE("12-Dec-24") 					12-DEC-2024 
-	STR2DATE("  130401") 					01-APR-2013 
-	STR2DATE("12-12-24") 					12-DEC-2024 
-	STR2DATE("12:12:24") 					12:12:24 PM 
-	STR2DATE("12") 							12 Days 
-	STR2DATE("12 4:14") 					12 Days 4 Hours 14 Minutes 
-	STR2DATE("9/8/14 17:21") 				08-SEP-2014 5:21 PM 
-	STR2DATE("May") 						* Error
+	STR2DATE("180704") 			04-JUL-2018 
+	STR2DATE("11/12/24") 			12-DEC-2024 
+	STR2DATE("12/12/1924") 			12-DEC-1924 
+	STR2DATE("121224") 			12-DEC-2024 
+	STR2DATE("12121964") 			12-DEC-1964
+	STR2DATE("12-Dec-24") 			12-DEC-2024 
+	STR2DATE("  130401") 			01-APR-2013 
+	STR2DATE("12-12-24") 			12-DEC-2024 
+	STR2DATE("12:12:24") 			12:12:24 PM 
+	STR2DATE("12") 				12 Days 
+	STR2DATE("12 4:14") 			12 Days 4 Hours 14 Minutes 
+	STR2DATE("9/8/14 17:21") 		08-SEP-2014 5:21 PM 
+	STR2DATE("May") 			* Error
 
 ### UPSHIFT	
 UPSHIFT converts all lowercase characters in a given string to uppercase characters. Can be used on a variable in place, or in conjunction to the MOVE verb to modify the target value to be shifted. Default behavior is to upshift all characters in the String, but the parameters EACH or FIRST modify the behavior. EACH will upshift the first character of each string after a whitespace and the First character. Specifying FIRST will upshift just the first character.
@@ -634,11 +634,11 @@ UPSHIFT converts all lowercase characters in a given string to uppercase charact
 
 **Examples:**
  		
-	Expression											Result
+	Expression						Result
 	MOVE "Gobol" to VAR									
-	UPSHIFT(VAR)										"GOBOL"
-	MOVE “george allan smith” 	TO VAR					“george allan smith”
-	MOVE UPSHIFT(“george allan smith”) TO VAR			“GEORGE ALLAN SMITH”
+	UPSHIFT(VAR)						"GOBOL"
+	MOVE “george allan smith” 	TO VAR			“george allan smith”
+	MOVE UPSHIFT(“george allan smith”) TO VAR		“GEORGE ALLAN SMITH”
 	MOVE UPSHIFT(“george allan smith”,EACH) TO VAR		“George Allan Smith”
 	MOVE UPSHIFT(“george allan smith”,FIRST) TO VAR		“George allan smith”
 
