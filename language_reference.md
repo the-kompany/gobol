@@ -18,6 +18,7 @@ by Shawn M. Gordon
     * [GETENV](#getenv)
     * [ISDATE](#isdate)
     * [ISNUMERIC](#isnumeric)
+    * [MOVE](#move)
     * [ROUND](#round)
     * [STR2DATE](#str2date)
     * [UPSHIFT](#upshift)
@@ -420,7 +421,7 @@ GETENV(string) -> string
 
 ### ISDATE	
 
-Determine if a variable is a date with an optional date format.
+Determine if a variable is a date with an optional date format. This function would normally be used in a conditional IF statement.
 
 **Usage:** 
 
@@ -456,7 +457,7 @@ If format-str is absent, ISDATE examines the string and returns TRUE if the stri
 	ISDATE("16:12:24") 			True
 
 ### ISNUMERIC 	
-Tests if a string can be converted to a numeric value. If the stringcan be successfully converted to a numeric value TRUE is returned, otherwise FALSE is returned. If TRUE is returned, then the NUMERIC function can convert the string to a numeric value without error. A numeric string may contain a decimal point, an E followed by an exponent, a single leading or trailing sign, a sign of CR or DB, and a comma as a 1000s separator. Leading and trailing spaces, asterisks (*), and dollar signs ($) are ignored. A numeric string may not contain more than one sign, more than one decimal point, or a misplaced comma separator. A null string or a string containing all spaces is interpreted as zero.
+Tests if a string can be converted to a numeric value. If the stringcan be successfully converted to a numeric value TRUE is returned, otherwise FALSE is returned. If TRUE is returned, then the NUMERIC function can convert the string to a numeric value without error. A numeric string may contain a decimal point, an E followed by an exponent, a single leading or trailing sign, a sign of CR or DB, and a comma as a 1000s separator. Leading and trailing spaces, asterisks, and dollar signs are ignored. A numeric string may not contain more than one sign, more than one decimal point, or a misplaced comma separator. A null string or a string containing all spaces is interpreted as zero. This function would normally be used in a conditional IF statement.
 
 
 **Usage:** 
@@ -487,6 +488,55 @@ Tests if a string can be converted to a numeric value. If the stringcan be succe
 	ISNUMERIC("-44 CR") 		False 
 	ISNUMERIC("-44-") 		False
 
+### MOVE
+Fundamentally the MOVE command will move data from one place to another. The source can be a literal or a variable, but the destination must be a variable that can accomodate what is being moved, ie., you cannot move a text string to a numeric variable type without throwing a runtime error. A useful aspect of the MOVE command is that it can operate on a single element of a data record, or the entire record itself. Many of the listed functions in this section will only work in concert with the MOVE command. 
+
+**Usage:**
+
+	MOVE data-element1 TO data-element2
+		or
+	MOVE "Gobol" TO data-element3
+	
+*data-element1* is the sending variable and *data-element2* is the receiving variable. The literal "Gobol" is being assigned to the alphabetic variable type *data-element3*.
+
+#### CORRESPONDING
+CORRESPONDING is a modifier for the MOVE command, MOVE CORRESPONDING will assign values between record structures to elements with identical names. It will not affect the elementary items in the sending or receiving structures that are not an exact name match.
+
+If the sending field length is less than the receiving field length, it will be padded with spaces or zeroes depending on the data type.
+
+If the sending field length is greater than the receiving field length, the data will be truncated based on the length.
+
+Sending alphabetic data to a numeric field will throw a run time error.
+
+Sending numeric data to an alphabetic field will typecast the data from numeric to alphabetic.
+
+**Usage:**
+
+	MOVE CORRESPONDING sending-record to receiving-record.
+
+**Example:**
+	
+	The following examples assume the script:
+	DEFINE sending-record : RECORD 
+		F : CHAR(4) 
+		G : CHAR(6)
+		H : CHAR(2) 
+	END
+	DEFINE receiving-record : RECORD
+		A : NUMERIC(10)
+		F : CHAR(6)
+		B : DATE
+		G : CHAR(6)
+		H : CHAR(2)
+	END
+	
+	MOVE "ABCD"   TO sending-record.F
+	MOVE "efghij" TO sending-record.G
+	MOVE “13”     TO sending-record.H
+	MOVE CORRESPONDING sending-record TO receiving-record
+	
+The result is that *receiving-record* will have the same values in elements F, G and H that *sending_record* has, and whatever data was in A and B will remain untouch. Since F is larger in the receiving field, it will simply be padded with blanks.
+	
 ### ROUND 	
 Rounds a number to a specified number of digits.
 
