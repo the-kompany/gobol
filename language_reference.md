@@ -833,7 +833,7 @@ This example reads a tab delimited file, standardizes some input fields and writ
 		UPSHIFT(DOWNSHIFT(table.szNameLast),FIRST)		// downshift entire string and then upshift the first character of the string, the FIRST is optional, default is ALL
 		UPSHIFT(DOWNSHIFT(table.szNameFirst),FIRST)
 		UPSHIFT(DOWNSHIFT(table.szNameMiddle),FIRST)
-		UPSHIFT(DOWNSHIFT(table.szMailAddress1,EACH)	// downshift entire string, then upshift the first letter of EACH word in the string 
+		UPSHIFT(DOWNSHIFT(table.szMailAddress1),EACH)	// downshift entire string, then upshift the first letter of EACH word in the string 
 		UPSHIFT(table.sSitusState)
 		DOWNSHIFT(table.szEmailAddress)	// standardize emails as lowercase
 		INSPECT table.szPhone CONVERTING SYMBOLS TO "" 	// we want to remove all non numeric symbols from the phone number
