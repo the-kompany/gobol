@@ -1,4 +1,5 @@
 # GOBOL Language Reference
+by Shawn M. Gordon
 ---------------------------------------
   * [Looping](#looping)
     * [PERFORM](#perform)
