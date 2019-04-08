@@ -9,3 +9,5 @@ To create a high level, highly readable and easy to work with language that is o
 GOBOL is inspired by verbs and features found in [COBOL](https://en.wikipedia.org/wiki/COBOL), [Go](https://golang.org/), [Python](https://www.python.org/) and the deprecated Warehouse language from [Taurus Software](https://taurus.com/) specifically. 
 
 [GOBOL Language Reference Guide](https://github.com/the-kompany/gobol/blob/master/language_reference.md) 
+
+We are looking for code contributors on the transpiler end specifically and also some corporate sponsors to bring this to fruition. If you have a bigdata or analytics company, this is something that would be useful for you.
