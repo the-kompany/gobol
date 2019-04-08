@@ -385,7 +385,7 @@ Used to extract data from a record or variable by position and length. The EXTRA
 
 **Examples:** 	
 
-The following examples assume the script:
+	The following examples assume the script:
 		DEFINE R : RECORD 
 				F : CHAR(4) 
 				G : CHAR(6)
