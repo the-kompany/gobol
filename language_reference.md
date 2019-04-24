@@ -771,6 +771,8 @@ MOVE EXPORT(ARRAY, <DELIMITER>, [NEW, APPEND OVERWRITE]) TO OUTPUT-FILE // will 
 
 MOVE CORRESPONDING RECORD1 TO RECORD2 //this will match the field names up between the two record structures and copy all the fields from RECORD1 that have the same names in RECORD2
 
+the Python "set" function is very useful for de-duping data and would be a useful function in Gobol.
+
 ## Some Pseudo Code
 This example reads a tab delimited file, standardizes some input fields and writes it to a SQL type database. The database is not defined in this sample.
 
