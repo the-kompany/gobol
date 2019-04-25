@@ -1,4 +1,5 @@
-# GOBOL
+![Gobol_logo](https://user-images.githubusercontent.com/12091079/56704865-a1293900-66c3-11e9-8c36-12ac2c585c0d.png)
+
 by Shawn M. Gordon
 
 The proposed Gobol language is designed as a high level language optimized for the movement and manipulation of data
