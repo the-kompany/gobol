@@ -161,7 +161,6 @@ func (l *lexer) next() rune {
 
 	r, w := utf8.DecodeLastRuneInString(l.input[l.pos:])
 
-	log.Fatal(l.input[l.pos:])
 	l.width = w
 	l.pos += l.width
 	return r
