@@ -6,9 +6,9 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
+	"unicode"
 	"unicode/utf8"
 )
 
@@ -22,6 +22,7 @@ type Token struct {
 	typ itemType
 	val string
 }
+type Pos int
 
 const (
 	itemError itemType = iota
@@ -128,6 +129,8 @@ func (l *lexer) emit(t itemType) {
 //lexText
 func lexText(l *lexer) stateFn {
 
+	l.width = 0
+	// l.pos = 3
 	return lexInsideAction
 }
 
@@ -153,16 +156,17 @@ Loop:
 }
 
 func (l *lexer) next() rune {
-
-	if l.pos >= len(l.input) {
+	if int(l.pos) >= len(l.input) {
 		l.width = 0
 		return eof
 	}
-
-	r, w := utf8.DecodeLastRuneInString(l.input[l.pos:])
-
+	r, w := utf8.DecodeRuneInString(l.input[l.pos:])
 	l.width = w
+	log.Println("next debug ", string(r))
 	l.pos += l.width
+	if r == '\n' {
+		l.line++
+	}
 	return r
 }
 
@@ -172,25 +176,26 @@ func (l *lexer) ignore() {
 
 func lexInsideAction(l *lexer) stateFn {
 
-	r := l.next()
+	// fmt.Println(strconv.QuoteRune(r))
 
-	fmt.Println(l.input)
-	fmt.Println(strconv.QuoteRune(r))
+	switch r := l.next(); {
 
-	// for {
-	// 	switch r := l.next(); {
+	case r == eof || r == '\n':
+		return l.errorf("unclosed actionm")
+	case isSpace(r):
+		l.ignore()
+	case string(r) == "print":
 
-	// 	case r == eof || r == '\n':
-	// 		return l.errorf("unclosed actionm")
-	// 	case isSpace(r):
-	// 		l.ignore()
-	// 	case string(r) == "print":
+		l.emit(itemField)
 
-	// 		l.emit(itemField)
-	// 	default:
-	// 		fmt.Println(string(r))
-	// 	}
-	// }
+	case r <= unicode.MaxASCII && unicode.IsPrint(r):
+		// l.emit(itemChar)
+		return lexInsideAction
+
+	default:
+		return l.errorf("unrecognized character")
+	}
+
 	return lexInsideAction
 }
 
