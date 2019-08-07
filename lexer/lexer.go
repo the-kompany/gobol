@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
-	"unicode"
 	"unicode/utf8"
 )
 
@@ -39,6 +38,7 @@ const (
 	itemKey
 	itemEqual
 	itemValue
+	itemMove
 )
 
 const eof rune = -1
@@ -91,6 +91,9 @@ func main() {
 
 		l := lex("", scanner.Text())
 
+		tkn := <-l.items
+
+		fmt.Println(tkn)
 		fmt.Println(l.items)
 	}
 
@@ -162,7 +165,7 @@ func (l *lexer) next() rune {
 	}
 	r, w := utf8.DecodeRuneInString(l.input[l.pos:])
 	l.width = w
-	log.Println("next debug ", string(r))
+	// log.Println("next debug ", string(r))
 	l.pos += l.width
 	if r == '\n' {
 		l.line++
@@ -178,24 +181,25 @@ func lexInsideAction(l *lexer) stateFn {
 
 	// fmt.Println(strconv.QuoteRune(r))
 
-	switch r := l.next(); {
+	var keyWord string
+	for {
 
-	case r == eof || r == '\n':
-		return l.errorf("unclosed actionm")
-	case isSpace(r):
-		l.ignore()
-	case string(r) == "print":
+		r := l.next()
+		if isSpace(r) || r == '\n' || r == eof {
+			break
+		}
+		keyWord += string(r)
+	}
 
-		l.emit(itemField)
+	switch keyWord {
 
-	case r <= unicode.MaxASCII && unicode.IsPrint(r):
-		// l.emit(itemChar)
-		return lexInsideAction
+	case "MOVE":
+		log.Println("MOVE")
+		l.emit(itemMove)
 
 	default:
 		return l.errorf("unrecognized character")
 	}
-
 	return lexInsideAction
 }
 
