@@ -221,7 +221,6 @@ func split(val string) []string {
 
 		if ok {
 			s += " "
-
 			if strings.HasSuffix(v, "\"") {
 				// end = true
 				ok = false
@@ -230,9 +229,14 @@ func split(val string) []string {
 				fields = append(fields, s)
 				continue
 			}
+			s += v
+			continue
 
 		}
 
+		if v == "" {
+			continue
+		}
 		fields = append(fields, v)
 
 	}

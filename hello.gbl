@@ -1,7 +1,7 @@
 MOVE "Gobol" TO VAR1 
 DISPLAY VAR1 
 DISPLAY "Hello world!"
-MOVE "gobol world" TO VAR2 
+MOVE "gobol is great" TO VAR2 
 UPSHIFT(VAR2, FIRST)     
 DISPLAY VAR2 
 
