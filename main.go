@@ -10,9 +10,19 @@ import (
 )
 
 type Data struct {
-	Vars map[string]string
-	Line int
+	Vars  map[string]string
+	Line  int
+	Lines []string
 }
+
+var itemType int
+
+//For keyword/identifier
+const (
+	Move    = "move"
+	UPSHIFT = "upshift"
+	DISPLAY = "display"
+)
 
 func main() {
 
@@ -42,21 +52,28 @@ func main() {
 	d := &Data{}
 	d.Vars = make(map[string]string)
 
+	//scan eeach line and append to slice
+	//better for parsing
 	for scanner.Scan() {
 
-		lower := scanner.Text()
+		d.Lines = append(d.Lines, scanner.Text())
 
-		if strings.HasPrefix(lower, "move") || strings.HasPrefix(lower, "MOVE") {
-			d.handleMove(lower)
+	}
+
+	//TODO Parse it
+
+	for _, v := range d.Lines {
+		if strings.HasPrefix(v, "move") || strings.HasPrefix(v, "MOVE") {
+			d.handleMove(v)
 			continue
 		}
 
-		if strings.HasPrefix(lower, "display") || strings.HasPrefix(lower, "DISPLAY") {
-			d.handleDisplay(lower)
+		if strings.HasPrefix(v, "display") || strings.HasPrefix(v, "DISPLAY") {
+			d.handleDisplay(v)
 		}
 
-		if strings.HasPrefix(lower, "upshift") || strings.HasPrefix(lower, "UPSHIFT") {
-			d.handleUpShift(lower, "", "")
+		if strings.HasPrefix(v, "upshift") || strings.HasPrefix(v, "UPSHIFT") {
+			d.handleUpShift(v, "", "")
 		}
 	}
 
