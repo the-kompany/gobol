@@ -196,30 +196,41 @@ func (d *Data) handleUpShift(val, first, to string) {
 func split(val string) []string {
 	// pos := 0
 	splitted := strings.Split(val, " ")
-
 	fields := []string{}
 
-	var ok = true
-	var s string
+	var (
+		ok = false
+		s  string
+	)
 
 	for _, v := range splitted {
+
 		if strings.HasPrefix(v, "\"") {
+
+			if strings.HasSuffix(v, "\"") {
+				fields = append(fields, v)
+				continue
+			}
+
+			ok = true
+
 			s += v
 
-			ok = false
 			continue
 		}
 
-		if !ok {
-
+		if ok {
 			s += " "
-			s += v
 
 			if strings.HasSuffix(v, "\"") {
-				ok = true
+				// end = true
+				ok = false
+
+				s += v
 				fields = append(fields, s)
 				continue
 			}
+
 		}
 
 		fields = append(fields, v)

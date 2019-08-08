@@ -1,4 +1,4 @@
-MOVE "Gobol world" TO VAR1 
+MOVE "Gobol" TO VAR1 
 DISPLAY VAR1 
 DISPLAY "Hello world!"
 MOVE "gobol world" TO VAR2 
