@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -38,5 +37,4 @@ func TestSplit(t *testing.T) {
 		}
 	}
 
-	fmt.Println("debug", tokens)
 }

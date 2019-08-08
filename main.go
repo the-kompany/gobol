@@ -181,15 +181,37 @@ func (d *Data) handleUpShift(val, first, to string) {
 
 	}
 
-	// if arg[1] == '"' {
+	// if to == "" && arg[0] == '"' {
+
 	// 	if arg[len(arg)-1] != '"' {
 	// 		fmt.Println("Error: string must be closed with double quote")
 	// 		os.Exit(1)
 	// 	}
 
 	// 	trimmed := arg[1 : len(arg)-1]
+	// 	variable := strings.ToUpper(trimmed)
+	// 	// return variable
 
 	// }
+
+	if to != "" {
+
+		if arg[0] != '"' || arg[len(arg)-1] != '"' {
+			fmt.Println("Error: string must be closed with double quote")
+			os.Exit(1)
+		}
+
+		if _, ok := d.Vars[to]; !ok {
+			fmt.Println("Error: Undefined variable \"", arg, "\"")
+			os.Exit(1)
+		}
+
+		trimmed := arg[1 : len(arg)-1]
+		variableValue := strings.ToUpper(trimmed)
+
+		d.Vars[to] = variableValue
+		// return variableValue
+	}
 
 }
 
