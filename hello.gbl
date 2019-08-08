@@ -1,1 +1,3 @@
-print #hello world!"
+MOVE "Gobol world" TO VAR1 
+DISPLAY VAR1 
+DISPLAY "Hello world!"
