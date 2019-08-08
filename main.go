@@ -74,10 +74,14 @@ func (d *Data) handleMove(val string) {
 		os.Exit(1)
 	}
 
+	if strings.HasPrefix(strings.ToLower(splitted[1]), "upshift") {
+		d.handleUpShift(splitted[1], "", splitted[3])
+	}
+
 	if strings.HasPrefix(splitted[1], "\"") {
 		d.Vars[splitted[3]] = splitted[1]
 	} else {
-		if _, ok := d.Vars[splitted[1]]; !ok {
+		if _, ok := d.Vars[splitted[3]]; !ok {
 			fmt.Println("Error: Undefined variable \"", splitted[1], "\"")
 			os.Exit(1)
 		}
@@ -221,45 +225,73 @@ func split(val string) []string {
 	fields := []string{}
 
 	var (
-		ok = false
-		s  string
+		ok               = false
+		s                string
+		startParenthesis = false
+		parenthesisStr   string
 	)
 
 	for _, v := range splitted {
 
-		if strings.HasPrefix(v, "\"") {
-
-			if strings.HasSuffix(v, "\"") {
+		if strings.Contains(v, "(") {
+			startParenthesis = true
+			parenthesisStr = v
+			if strings.HasSuffix(v, ")") {
 				fields = append(fields, v)
+			}
+			continue
+
+		}
+
+		if startParenthesis {
+			parenthesisStr += " "
+			if strings.HasSuffix(v, ")") {
+				startParenthesis = false
+				parenthesisStr += v
+				fields = append(fields, parenthesisStr)
 				continue
 			}
 
-			ok = true
+			parenthesisStr += v
 
-			s += v
-
-			continue
 		}
 
-		if ok {
-			s += " "
-			if strings.HasSuffix(v, "\"") {
-				// end = true
-				ok = false
+		if !startParenthesis {
+
+			if strings.HasPrefix(v, "\"") {
+
+				if strings.HasSuffix(v, "\"") {
+					fields = append(fields, v)
+					continue
+				}
+
+				ok = true
 
 				s += v
-				fields = append(fields, s)
+
 				continue
 			}
-			s += v
-			continue
 
-		}
+			if ok {
+				s += " "
+				if strings.HasSuffix(v, "\"") {
+					// end = true
+					ok = false
 
-		if v == "" {
-			continue
+					s += v
+					fields = append(fields, s)
+					continue
+				}
+				s += v
+				continue
+
+			}
+
+			if v == "" {
+				continue
+			}
+			fields = append(fields, v)
 		}
-		fields = append(fields, v)
 
 	}
 
