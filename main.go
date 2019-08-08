@@ -54,6 +54,10 @@ func main() {
 		if strings.HasPrefix(lower, "display") || strings.HasPrefix(lower, "DISPLAY") {
 			d.handleDisplay(lower)
 		}
+
+		if strings.HasPrefix(lower, "upshift") || strings.HasPrefix(lower, "UPSHIFT") {
+			d.handleUpShift(lower, "", "")
+		}
 	}
 
 }
@@ -103,6 +107,90 @@ func (d *Data) handleDisplay(val string) {
 		fmt.Println(trimmedQuote)
 
 	}
+}
+
+func (d *Data) handleUpShift(val, first, to string) {
+	//UPSHIFT(VAR)
+
+	//get UPSHIFT function argument
+	var (
+		ok    = false
+		start = false
+		end   = false
+		arg   string
+	)
+
+	for _, v := range val {
+		if v == '(' {
+			ok = true
+			start = true
+			continue
+		}
+
+		if ok {
+			if v == ')' {
+				end = true
+				break
+			}
+			arg += string(v)
+
+			if v == '\n' && start == true && end == false {
+				fmt.Println("Error: Parenthesis not closed")
+				os.Exit(1)
+			}
+			continue
+		}
+
+	}
+
+	//trim the leading space
+	trimmedArg := strings.TrimSpace(arg)
+
+	//to == "" means it must be variable in the argument
+	if to == "" {
+		if strings.Contains(trimmedArg, ",") {
+
+			splitted := strings.Split(trimmedArg, ",")
+
+			if strings.TrimSpace(strings.ToLower(splitted[1])) != "first" {
+				fmt.Printf("Invalid argument %v, second argument first is allowed\n", splitted[1])
+				os.Exit(1)
+			} else {
+				if _, ok := d.Vars[splitted[0]]; !ok {
+					fmt.Println("Error: Undefined variable \"", splitted[1], "\"")
+					os.Exit(1)
+				}
+
+				//make first character upper-case
+				variable := strings.Title(d.Vars[splitted[0]])
+				d.Vars[splitted[0]] = variable
+				return
+			}
+
+		}
+
+		//if arg first is not provided make everything upper-case of the variable value
+		if _, ok := d.Vars[arg]; !ok {
+			fmt.Println("Error: Undefined variable \"", arg, "\"")
+			os.Exit(1)
+		}
+
+		//make first character upper-case
+		variable := strings.ToUpper(d.Vars[arg])
+		d.Vars[arg] = variable
+
+	}
+
+	// if arg[1] == '"' {
+	// 	if arg[len(arg)-1] != '"' {
+	// 		fmt.Println("Error: string must be closed with double quote")
+	// 		os.Exit(1)
+	// 	}
+
+	// 	trimmed := arg[1 : len(arg)-1]
+
+	// }
+
 }
 
 func split(val string) []string {
