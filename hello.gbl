@@ -4,7 +4,7 @@ DISPLAY "Hello world!"
 MOVE "gobol is great" TO VAR2 
 UPSHIFT(VAR2, FIRST)     
 DISPLAY VAR2 
-MOVE UPSHIFT("george allan smith") TO VAR1
+MOVE UPSHIFT(VAR2, FIRST) TO VAR1
 DISPLAY VAR1 
 MOVE "gobol world" TO VAR3 
 UPSHIFT(VAR3)     

@@ -130,9 +130,16 @@ func (d *Data) handleDisplay(val string) {
 	}
 }
 
-func (d *Data) handleUpShift(val, first, to string) {
-	//UPSHIFT(VAR)
+//handleUpShift parse the argument from UPSHIFT()
+//then it makes the provided string uppercase or only make first character of the word uppercase
+//if first is found in argument with separated by comma
+func (d *Data) handleUpShift(val, first, to string) string {
 
+	//TODO this function should only return the uppercase string and
+	//it should not assin the value to the variable
+	//Refactor needed for this: remove the to and first argument
+
+	//UPSHIFT(VAR)
 	//get UPSHIFT function argument
 	var (
 		ok    = false
@@ -166,39 +173,39 @@ func (d *Data) handleUpShift(val, first, to string) {
 
 	//trim the leading space
 	trimmedArg := strings.TrimSpace(arg)
+	argSplitted := strings.Split(trimmedArg, ",")
 
 	//to == "" means it must be variable in the argument
 	if to == "" {
-		if strings.Contains(trimmedArg, ",") {
+		if len(argSplitted) > 1 {
 
-			splitted := strings.Split(trimmedArg, ",")
-
-			if strings.TrimSpace(strings.ToLower(splitted[1])) != "first" {
-				fmt.Printf("Invalid argument %v, second argument first is allowed\n", splitted[1])
+			if strings.TrimSpace(strings.ToLower(argSplitted[1])) != "first" {
+				fmt.Printf("Invalid argument %v, second argument first is allowed\n", argSplitted[1])
 				os.Exit(1)
 			} else {
-				if _, ok := d.Vars[splitted[0]]; !ok {
-					fmt.Println("Error: Undefined variable \"", splitted[1], "\"")
+				if _, ok := d.Vars[argSplitted[0]]; !ok {
+					fmt.Println("Error: Undefined variable \"", argSplitted[1], "\"")
 					os.Exit(1)
 				}
 
 				//make first character upper-case
-				variable := strings.Title(d.Vars[splitted[0]])
-				d.Vars[splitted[0]] = variable
-				return
+				variable := strings.Title(d.Vars[argSplitted[0]])
+				d.Vars[argSplitted[0]] = variable
+				return variable
 			}
 
 		}
 
 		//if arg first is not provided make everything upper-case of the variable value
-		if _, ok := d.Vars[arg]; !ok {
-			fmt.Println("Error: Undefined variable \"", arg, "\"")
+		if _, ok := d.Vars[argSplitted[0]]; !ok {
+			fmt.Println("Error: Undefined variable \"", argSplitted[0], "\"")
 			os.Exit(1)
 		}
 
 		//make first character upper-case
-		variable := strings.ToUpper(d.Vars[arg])
-		d.Vars[arg] = variable
+		variable := strings.ToUpper(d.Vars[argSplitted[0]])
+		d.Vars[argSplitted[0]] = variable
+		return variable
 
 	}
 
@@ -217,22 +224,71 @@ func (d *Data) handleUpShift(val, first, to string) {
 
 	if to != "" {
 
-		if arg[0] != '"' || arg[len(arg)-1] != '"' {
-			fmt.Println("Error: string must be closed with double quote")
-			os.Exit(1)
-		}
-
 		if _, ok := d.Vars[to]; !ok {
 			fmt.Println("Error: Undefined variable \"", arg, "\"")
 			os.Exit(1)
 		}
 
-		trimmed := arg[1 : len(arg)-1]
-		variableValue := strings.ToUpper(trimmed)
+		if len(argSplitted) > 1 {
+			if strings.TrimSpace(strings.ToLower(argSplitted[1])) != "first" {
+				fmt.Printf("Invalid argument %v, second argument first is allowed\n", argSplitted[1])
+				os.Exit(1)
+			}
 
-		d.Vars[to] = variableValue
+			if strings.HasPrefix(argSplitted[0], "\"") {
+				if !strings.HasSuffix(argSplitted[0], "\"") {
+					fmt.Println("Error: string must be closed with double quote")
+					os.Exit(1)
+				}
+				variableValue := strings.Title(argSplitted[0])
+				d.Vars[to] = variableValue
+				return variableValue
+
+			} else {
+				//it's a variable will assign to another variable (value of TO)
+
+				if _, ok := d.Vars[argSplitted[0]]; !ok {
+					fmt.Println("Error: Undefined variable \"", arg, "\"")
+					os.Exit(1)
+				}
+
+				variableValue := strings.Title(d.Vars[argSplitted[0]])
+				d.Vars[to] = variableValue
+				return variableValue
+
+			}
+
+		}
+		// trimmed := arg[1 : len(arg)-1]
+
+		//it's a string will assign to variable
+		if strings.HasPrefix(argSplitted[0], "\"") {
+			if !strings.HasSuffix(arg, "\"") {
+				fmt.Println("Error: string must be closed with double quote")
+				os.Exit(1)
+			}
+
+			variableValue := strings.ToUpper(argSplitted[0])
+			d.Vars[to] = variableValue[1 : len(variableValue)-1]
+
+		} else {
+			//it's a variable will assign to another variable (value of TO)
+
+			if _, ok := d.Vars[argSplitted[0]]; !ok {
+				fmt.Println("Error: Undefined variable \"", to, "\"")
+				os.Exit(1)
+			}
+
+			variableValue := strings.ToUpper(d.Vars[argSplitted[0]])
+			d.Vars[to] = variableValue
+			return variableValue
+
+		}
+
 		// return variableValue
 	}
+
+	return ""
 
 }
 
@@ -255,6 +311,7 @@ func split(val string) []string {
 			parenthesisStr = v
 			if strings.HasSuffix(v, ")") {
 				fields = append(fields, v)
+				startParenthesis = false
 			}
 			continue
 
