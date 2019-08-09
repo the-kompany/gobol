@@ -12,3 +12,8 @@ DISPLAY VAR1
 MOVE "gobol world" TO VAR3 
 UPSHIFT(VAR3)     
 DISPLAY VAR3 
+
+IF (DOWNSHIFT(mystring) = “gobol) THEN
+   MOVE “20190401” TO MYDATE
+   
+END-IF
