@@ -1,4 +1,4 @@
-package main
+package transpiler
 
 import (
 	"testing"
@@ -12,7 +12,7 @@ func TestUpShift(t *testing.T) {
 	d.Vars["var1"] = "gobol"
 	// v := "UPSHIFT( \"var1\")"
 	v := "UPSHIFT(var1)"
-	d.handleUpShift(v, "", "")
+	d.HandleUpShift(v, "", "")
 
 	if d.Vars["var1"] != "GOBOL" {
 		t.Errorf("Expected %v, got %v", "GOBOL", d.Vars["var1"])
@@ -21,7 +21,7 @@ func TestUpShift(t *testing.T) {
 	// //test for first character
 	d.Vars["var1"] = "gobol"
 	v = "UPSHIFT(var1, first)"
-	d.handleUpShift(v, "", "")
+	d.HandleUpShift(v, "", "")
 
 	if d.Vars["var1"] != "Gobol" {
 		t.Errorf("Expected %v, got %v", "Gobol", d.Vars["var1"])
@@ -29,7 +29,7 @@ func TestUpShift(t *testing.T) {
 
 	d.Vars["var4"] = "gobol"
 	v = "UPSHIFT(\"new value\")"
-	d.handleUpShift(v, "", "var4")
+	d.HandleUpShift(v, "", "var4")
 
 	if d.Vars["var4"] != "NEW VALUE" {
 		t.Errorf("Expected %v, got %v", "NEW VALUE", d.Vars["var4"])
@@ -38,7 +38,7 @@ func TestUpShift(t *testing.T) {
 	//test for upshift variable to variable
 	d.Vars["var4"] = "gobol"
 	v = "UPSHIFT(var4)"
-	d.handleUpShift(v, "", "var1")
+	d.HandleUpShift(v, "", "var1")
 
 	if d.Vars["var1"] != "GOBOL" {
 		t.Errorf("Expected %v, got %v", "GOBOL", d.Vars["var1"])
@@ -47,7 +47,7 @@ func TestUpShift(t *testing.T) {
 	//upshift first character, variable to variable
 	d.Vars["var4"] = "gobol"
 	v = "UPSHIFT(var4,first)"
-	d.handleUpShift(v, "", "var1")
+	d.HandleUpShift(v, "", "var1")
 
 	if d.Vars["var1"] != "Gobol" {
 		t.Errorf("Expected %v, got %v", "Gobol", d.Vars["var1"])

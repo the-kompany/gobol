@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"testing"
@@ -9,7 +9,7 @@ func TestSplit(t *testing.T) {
 	str := "MOVE \"gobol\" TO VAR2 "
 
 	expectedTokens := []string{"MOVE", "\"gobol\"", "TO", "VAR2"}
-	tokens := split(str)
+	tokens := Split(str)
 
 	if len(tokens) != len(expectedTokens) {
 		t.Errorf("Expected lenght for token fields %v got %v ", len(expectedTokens), len(tokens))
@@ -25,7 +25,7 @@ func TestSplit(t *testing.T) {
 	str = "MOVE \"gobol is great\" TO VAR2 "
 
 	expectedTokens = []string{"MOVE", "\"gobol is great\"", "TO", "VAR2"}
-	tokens = split(str)
+	tokens = Split(str)
 
 	if len(tokens) != len(expectedTokens) {
 		t.Errorf("Expected lenght for token fields %v got %v ", len(expectedTokens), len(tokens))
