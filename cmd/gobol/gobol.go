@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/the-kompany/gobol/pkg/handler"
+	"github.com/the-kompany/gobol/pkg/parser"
 )
 
 var itemType int
@@ -106,6 +107,16 @@ func main() {
 	//TODO Parse it
 
 	for _, v := range d.Lines {
+
+		if strings.HasPrefix(strings.ToLower(v), "if") {
+
+			if !parser.ValidIfBlock(v) {
+				fmt.Println("Syntax error: invalid if block at line ")
+				os.Exit(1)
+			}
+
+			d.IfBlock(v)
+		}
 		if strings.HasPrefix(v, "move") || strings.HasPrefix(v, "MOVE") {
 			d.Move(v)
 			continue
