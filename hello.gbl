@@ -2,8 +2,11 @@ MOVE "Gobol" TO VAR1
 DISPLAY VAR1 
 DISPLAY "Hello world!"
 MOVE "gobol is great" TO VAR2 
-UPSHIFT(VAR2, FIRST)     
+
+//this is a comment
+UPSHIFT(VAR2, FIRST)     //another comment 
 DISPLAY VAR2 
+
 MOVE UPSHIFT(VAR2, FIRST) TO VAR1
 DISPLAY VAR1 
 MOVE "gobol world" TO VAR3 

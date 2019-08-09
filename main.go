@@ -56,9 +56,27 @@ func main() {
 	//better for parsing
 	for scanner.Scan() {
 
-		d.Lines = append(d.Lines, scanner.Text())
+		l := scanner.Text()
+		trimmed := strings.TrimSpace(l)
+
+		if strings.HasPrefix(trimmed, "//") {
+			continue
+		} else if strings.Contains(trimmed, "//") {
+			i := strings.Index(trimmed, "//")
+			if trimmed[i-1] != '"' {
+				splitted := strings.Split(trimmed, "//")
+				d.Lines = append(d.Lines, strings.TrimSpace(splitted[0]))
+
+			}
+		} else if len(trimmed) < 1 {
+			continue
+		}
+
+		d.Lines = append(d.Lines, trimmed)
 
 	}
+
+	// log.Println(len(d.Lines))
 
 	//TODO Parse it
 
