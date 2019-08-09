@@ -1,4 +1,4 @@
-package transpiler
+package handler
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 //handleUpShift parse the argument from UPSHIFT()
 //then it makes the provided string uppercase or only make first character of the word uppercase
 //if first is found in argument with separated by comma
-func (d *Data) HandleUpShift(val, first, to string) string {
+func (d *Data) UpShift(val, first, to string) string {
 
 	//TODO this function should only return the uppercase string and
 	//it should not assin the value to the variable

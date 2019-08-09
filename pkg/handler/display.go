@@ -1,4 +1,4 @@
-package transpiler
+package handler
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/the-kompany/gobol/utils"
 )
 
-func (d *Data) HandleDisplay(val string) {
+func (d *Data) Display(val string) {
 	trimmed := strings.TrimSpace(val)
 
 	splitted := utils.Split(trimmed)

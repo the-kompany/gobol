@@ -1,4 +1,4 @@
-package transpiler
+package handler
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/the-kompany/gobol/utils"
 )
 
-func (d *Data) HandleMove(val string) {
+func (d *Data) Move(val string) {
 
 	trimmed := strings.TrimSpace(val)
 
@@ -21,7 +21,7 @@ func (d *Data) HandleMove(val string) {
 	}
 
 	if strings.HasPrefix(strings.ToLower(splitted[1]), "upshift") {
-		d.HandleUpShift(splitted[1], "", splitted[3])
+		d.UpShift(splitted[1], "", splitted[3])
 	}
 
 	if strings.HasPrefix(splitted[1], "\"") {

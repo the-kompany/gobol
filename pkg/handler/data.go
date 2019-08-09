@@ -1,4 +1,4 @@
-package transpiler
+package handler
 
 type Data struct {
 	Vars  map[string]string
