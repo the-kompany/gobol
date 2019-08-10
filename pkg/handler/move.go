@@ -21,7 +21,18 @@ func (d *Data) Move(val string) {
 	}
 
 	if strings.HasPrefix(strings.ToLower(splitted[1]), "upshift") {
-		d.UpShift(splitted[1], "", splitted[3])
+		upShifted, err := d.UpShift(splitted[1], "", splitted[3])
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		if _, ok := d.Vars[splitted[3]]; !ok {
+			fmt.Println("Error: Undefined variable \"", splitted[1], "\"")
+			os.Exit(1)
+		}
+
+		d.Vars[splitted[3]] = upShifted
 	}
 
 	if strings.HasPrefix(splitted[1], "\"") {

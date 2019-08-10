@@ -3,7 +3,6 @@ package handler
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 )
@@ -60,7 +59,6 @@ func (d *Data) UpShift(val, first, to string) (string, error) {
 		}
 
 		if strings.Contains(arg0Trimmed, "\"") {
-			log.Println(arg0Trimmed)
 
 			if !strings.HasPrefix(arg0Trimmed, "\"") || !strings.HasSuffix(arg0Trimmed, "\"") {
 				err := errors.New("Error: string must be closed with double quote")
@@ -68,7 +66,7 @@ func (d *Data) UpShift(val, first, to string) (string, error) {
 			}
 
 			variableValue := strings.Title(arg0Trimmed)
-			d.Vars[to] = variableValue
+			// d.Vars[to] = variableValue
 			return variableValue[1 : len(variableValue)-1], nil
 
 		}
@@ -79,7 +77,7 @@ func (d *Data) UpShift(val, first, to string) (string, error) {
 		}
 
 		variableValue := strings.Title(d.Vars[arg0Trimmed])
-		d.Vars[to] = variableValue
+		// d.Vars[to] = variableValue
 		return variableValue, nil
 
 	}
@@ -91,7 +89,7 @@ func (d *Data) UpShift(val, first, to string) (string, error) {
 		}
 
 		variableValue := strings.ToUpper(arg0Trimmed)
-		d.Vars[to] = variableValue[1 : len(variableValue)-1]
+		// d.Vars[to] = variableValue[1 : len(variableValue)-1]
 		return variableValue[1 : len(variableValue)-1], nil
 
 	}
@@ -103,7 +101,7 @@ func (d *Data) UpShift(val, first, to string) (string, error) {
 	}
 
 	variableValue := strings.ToUpper(d.Vars[arg0Trimmed])
-	d.Vars[to] = variableValue
+	// d.Vars[to] = variableValue
 	return variableValue, nil
 
 }
