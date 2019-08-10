@@ -122,12 +122,17 @@ func main() {
 			continue
 		}
 
-		if strings.HasPrefix(v, "display") || strings.HasPrefix(v, "DISPLAY") {
-			d.Display(v)
+		if strings.HasPrefix(v, "upshift") || strings.HasPrefix(v, "UPSHIFT") {
+			d.Shift(v, "", 1)
 		}
 
-		if strings.HasPrefix(v, "upshift") || strings.HasPrefix(v, "UPSHIFT") {
-			d.UpShift(v, "", "")
+		if strings.HasPrefix(strings.ToLower(v), "downshift") {
+			d.Shift(v, "", 0)
+
+		}
+
+		if strings.HasPrefix(strings.TrimSpace(strings.ToLower(v)), "display") {
+			d.Display(v)
 		}
 	}
 

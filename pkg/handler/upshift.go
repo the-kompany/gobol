@@ -7,10 +7,10 @@ import (
 	"strings"
 )
 
-//UpShift parse the argument from UPSHIFT()
+//Shift parse the argument from UPSHIFT()
 //then it makes the provided string uppercase or only make first character of the word uppercase
 //if first is found in argument with separated by comma
-func (d *Data) UpShift(val, first, to string) (string, error) {
+func (d *Data) Shift(val, first string, shiftType int) (string, error) {
 
 	//TODO this function should only return the uppercase string and
 
@@ -88,9 +88,15 @@ func (d *Data) UpShift(val, first, to string) (string, error) {
 			return "", err
 		}
 
-		variableValue := strings.ToUpper(arg0Trimmed)
-		// d.Vars[to] = variableValue[1 : len(variableValue)-1]
-		return variableValue[1 : len(variableValue)-1], nil
+		if shiftType == 1 {
+			variableValue := strings.ToUpper(arg0Trimmed)
+			return variableValue[1 : len(variableValue)-1], nil
+
+		} else if shiftType == 0 {
+
+			variableValue := strings.ToLower(arg0Trimmed)
+			return variableValue[1 : len(variableValue)-1], nil
+		}
 
 	}
 
@@ -100,8 +106,13 @@ func (d *Data) UpShift(val, first, to string) (string, error) {
 		return "", err
 	}
 
-	variableValue := strings.ToUpper(d.Vars[arg0Trimmed])
-	// d.Vars[to] = variableValue
+	if shiftType == 1 {
+		variableValue := strings.ToUpper(d.Vars[arg0Trimmed])
+		// d.Vars[to] = variableValue
+		return variableValue, nil
+
+	}
+	variableValue := strings.ToLower(d.Vars[arg0Trimmed])
 	return variableValue, nil
 
 }

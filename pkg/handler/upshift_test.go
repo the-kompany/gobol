@@ -4,13 +4,13 @@ import (
 	"testing"
 )
 
-func TestUpShift(t *testing.T) {
+func TestShift(t *testing.T) {
 
 	d := &Data{}
 	d.Vars = make(map[string]string)
 
 	v := "UPSHIFT(\"gobol\")"
-	upShifted, err := d.UpShift(v, "", "")
+	upShifted, err := d.Shift(v, "", 1)
 
 	if err != nil {
 		t.Errorf("Expected %v, got %v", "GOBOL", err)
@@ -19,7 +19,7 @@ func TestUpShift(t *testing.T) {
 	}
 
 	v = "UPSHIFT(\"gobol\" , first)"
-	upShifted, err = d.UpShift(v, "", "")
+	upShifted, err = d.Shift(v, "", 1)
 
 	if err != nil {
 		t.Errorf("Expected %v, got %v", "Gobol", err)
@@ -29,7 +29,7 @@ func TestUpShift(t *testing.T) {
 
 	d.Vars["var1"] = "gobol"
 	v = "UPSHIFT(var1)"
-	upShifted, err = d.UpShift(v, "", "")
+	upShifted, err = d.Shift(v, "", 1)
 
 	if err != nil {
 		t.Errorf("Expected %v, got %v", "GOBOL", err)
@@ -39,7 +39,7 @@ func TestUpShift(t *testing.T) {
 
 	d.Vars["var1"] = "gobol"
 	v = "UPSHIFT(var1, first)"
-	upShifted, err = d.UpShift(v, "", "")
+	upShifted, err = d.Shift(v, "", 1)
 
 	if err != nil {
 		t.Errorf("Expected %v, got %v", "Gobol", upShifted)
@@ -49,7 +49,7 @@ func TestUpShift(t *testing.T) {
 
 	//test for error
 	v = "UPSHIFT(\"gobol)"
-	_, err = d.UpShift(v, "", "")
+	_, err = d.Shift(v, "", 1)
 
 	expected := "Error: string must be closed with double quote"
 	if err == nil {
@@ -57,7 +57,7 @@ func TestUpShift(t *testing.T) {
 	}
 
 	v = "UPSHIFT(gobol\")"
-	_, err = d.UpShift(v, "", "")
+	_, err = d.Shift(v, "", 1)
 
 	expected = "Error: string must be closed with double quote"
 	if err == nil {
@@ -65,12 +65,33 @@ func TestUpShift(t *testing.T) {
 	}
 
 	v = "UPSHIFT(var5)"
-	_, err = d.UpShift(v, "", "")
+	_, err = d.Shift(v, "", 1)
 
 	expected = "Error: Undefined variable \"var5\""
 
 	if err.Error() != expected {
 		t.Errorf("Expected %v, got %v", expected, err)
+	}
+
+	//------------------------ Test DownShift-----------------------
+
+	v = "SHIFT(\"GOBOL\")"
+	downShifted, err := d.Shift(v, "", 0)
+
+	if err != nil {
+		t.Errorf("Expected %v, got %v", "gobol", err)
+	} else if downShifted != "gobol" {
+		t.Errorf("Expected %v, got %v", "gobol", downShifted)
+	}
+
+	d.Vars["var1"] = "GOBOL"
+	v = "UPSHIFT(var1)"
+	downShifted, err = d.Shift(v, "", 0)
+
+	if err != nil {
+		t.Errorf("Expected %v, got %v", "GOBOL", err)
+	} else if downShifted != "gobol" {
+		t.Errorf("Expected %v, got %v", "gobol", downShifted)
 	}
 
 }
