@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -102,37 +103,51 @@ func main() {
 
 	}
 
+	if err := scanner.Err(); err != nil {
+		if err != io.EOF {
+			fmt.Fprintln(os.Stderr, err)
+			fmt.Println("eof")
+		}
+	}
+
 	// log.Println(d.Lines[len(d.Lines)-1])
 
 	//TODO Parse it
 
 	for _, v := range d.Lines {
 
-		if strings.HasPrefix(strings.ToLower(v), "if") {
+		token := strings.SplitAfter(v, " ")
 
+		tokenTrimmed := strings.ToLower(strings.TrimSpace(token[0]))
+
+		var firstToken string
+		if strings.Contains(tokenTrimmed, "(") {
+			spl := strings.Split(tokenTrimmed, "(")
+			firstToken = spl[0]
+		} else {
+			firstToken = tokenTrimmed
+		}
+
+		switch firstToken {
+		case "if":
 			if !parser.ValidIfBlock(v) {
 				fmt.Println("Syntax error: invalid if block at line ")
 				os.Exit(1)
 			}
 
 			d.IfBlock(v)
-		}
-		if strings.HasPrefix(v, "move") || strings.HasPrefix(v, "MOVE") {
+
+		case "move":
 			d.Move(v)
 			continue
-		}
-
-		if strings.HasPrefix(v, "upshift") || strings.HasPrefix(v, "UPSHIFT") {
+		case "upshift":
 			d.Shift(v, "", 1)
-		}
-
-		if strings.HasPrefix(strings.ToLower(v), "downshift") {
+		case "downshift":
 			d.Shift(v, "", 0)
-
-		}
-
-		if strings.HasPrefix(strings.TrimSpace(strings.ToLower(v)), "display") {
+		case "display":
 			d.Display(v)
+		default:
+			fmt.Printf("Error: Undefined %v in %v", firstToken, v)
 		}
 	}
 
