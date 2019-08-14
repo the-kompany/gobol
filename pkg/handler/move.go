@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -20,33 +21,52 @@ func (d *Data) Move(val string) {
 		os.Exit(1)
 	}
 
-	if strings.HasPrefix(strings.ToLower(splitted[1]), "upshift") {
-		upShifted, err := d.Shift(splitted[1], "", 1)
+	funcName := splitted[1]
+	funcNameLower := strings.ToLower(funcName)
+
+	switch {
+	case strings.HasPrefix(funcNameLower, "upshift"):
+		upShifted, err := d.Shift(funcName, "", 1)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
 		if _, ok := d.Vars[splitted[3]]; !ok {
-			fmt.Println("Error: Undefined variable \"", splitted[1], "\"")
+			fmt.Println("Error: Undefined variable \"", funcName, "\"")
 			os.Exit(1)
 		}
 
 		d.Vars[splitted[3]] = upShifted
 
-	} else if strings.HasPrefix(strings.ToLower(splitted[1]), "downshift") {
-		downShifted, err := d.Shift(splitted[1], "", 0)
+	case strings.HasPrefix(funcNameLower, "downshift"):
+		downShifted, err := d.Shift(funcName, "", 0)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
 		if _, ok := d.Vars[splitted[3]]; !ok {
-			fmt.Println("Error: Undefined variable \"", splitted[1], "\"")
+			fmt.Println("Error: Undefined variable \"", funcName, "\"")
 			os.Exit(1)
 		}
 
 		d.Vars[splitted[3]] = downShifted
+
+	case strings.HasPrefix(funcNameLower, "accept"):
+		arg, err := getFuncArg(funcName)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		v := d.Accept(arg)
+		if len(v) > 0 {
+			if _, ok := d.Vars[splitted[3]]; !ok {
+				fmt.Println("Error: Undefined variable \"", splitted[1], "\"")
+				os.Exit(1)
+			}
+			d.Vars[splitted[3]] = v
+		}
 
 	}
 
@@ -60,4 +80,39 @@ func (d *Data) Move(val string) {
 
 	}
 
+}
+
+func getFuncArg(val string) (string, error) {
+
+	var (
+		ok    = false
+		start = false
+		end   = false
+		arg   string
+	)
+
+	for _, v := range val {
+		if v == '(' {
+			ok = true
+			start = true
+			continue
+		}
+
+		if ok {
+			if v == ')' {
+				end = true
+				break
+			}
+			arg += string(v)
+
+			if v == '\n' && start == true && end == false {
+				err := errors.New("Error: Parenthesis not closed")
+				return arg, err
+			}
+			continue
+		}
+
+	}
+
+	return arg, nil
 }
