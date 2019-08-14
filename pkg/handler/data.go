@@ -10,3 +10,7 @@ type Token struct {
 	Value string
 	Line  int
 }
+
+type File struct {
+	Data map[string][][]string
+}

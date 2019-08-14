@@ -181,6 +181,8 @@ func main() {
 			d.Shift(v.Value, "", 0)
 		case "display":
 			d.Display(v.Value)
+		case "open":
+			d.Open(v.Value)
 		default:
 			fmt.Printf("Error: Undefined %v at line %v \n", firstToken, v.Line)
 		}
