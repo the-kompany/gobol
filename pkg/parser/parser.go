@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"errors"
+	"strconv"
 	"strings"
 )
 
@@ -32,5 +34,38 @@ func ValidIfBlock(val string) bool {
 //check if the string is a valid function call
 
 func ValidateFunctionCall(val string) {
+
+}
+
+func ValidPerformBlock(val string) ([]string, error) {
+
+	trimmed := strings.TrimSpace(val)
+	splitted := strings.Split(trimmed, " ")
+
+	if splitted[2] == strings.ToLower("times") {
+		_, err := strconv.Atoi(strings.TrimSpace(splitted[1]))
+
+		if err != nil {
+			return splitted, errors.New("Error: loop times must be number")
+		}
+
+	}
+
+	if strings.ToLower(strings.TrimSpace(splitted[len(splitted)-1])) != "end-perform" {
+		return splitted, errors.New("Error: Perform block must be end with END-PERFORM")
+	}
+
+	sl := []string{}
+
+	for _, v := range splitted {
+		if len(strings.TrimSpace(v)) < 1 {
+			continue
+		} else {
+			str := strings.TrimSpace(v)
+			sl = append(sl, str)
+		}
+	}
+
+	return sl, nil
 
 }

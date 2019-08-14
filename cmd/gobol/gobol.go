@@ -52,6 +52,8 @@ func main() {
 
 	var ifBlock string
 	ifStart := false
+	var performstart bool
+	var performBlock string
 	var trimmed string
 
 	//scan eeach line and append to slice
@@ -61,6 +63,9 @@ func main() {
 		l := scanner.Text()
 		if ifStart == false {
 			trimmed = strings.TrimSpace(l)
+		} else if performstart == false {
+			trimmed = strings.TrimSpace(l)
+
 		}
 
 		if strings.HasPrefix(trimmed, "//") {
@@ -99,6 +104,26 @@ func main() {
 			continue
 		}
 
+		if strings.HasPrefix(strings.ToLower(l), "perform") {
+			performstart = true
+			performBlock += l
+			continue
+		}
+
+		if performstart == true {
+
+			if strings.HasPrefix(strings.ToLower(l), "end-perform") {
+				performstart = false
+				performBlock += " " + l
+				d.Lines = append(d.Lines, performBlock)
+				continue
+			}
+
+			performBlock += l
+
+			continue
+		}
+
 		d.Lines = append(d.Lines, trimmed)
 
 	}
@@ -129,6 +154,14 @@ func main() {
 		}
 
 		switch firstToken {
+		case "perform":
+			if tokens, err := parser.ValidPerformBlock(v); err != nil {
+				fmt.Println("Syntax error: invalid PERFORM block at line ")
+				os.Exit(1)
+			} else {
+				d.PerformLoopBlock(tokens)
+			}
+
 		case "if":
 			if !parser.ValidIfBlock(v) {
 				fmt.Println("Syntax error: invalid if block at line ")
@@ -147,7 +180,7 @@ func main() {
 		case "display":
 			d.Display(v)
 		default:
-			fmt.Printf("Error: Undefined %v in %v", firstToken, v)
+			// fmt.Printf("Error: Undefined %v in %v\ns", firstToken, v)
 		}
 	}
 
