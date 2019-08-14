@@ -29,4 +29,3 @@ PERFORM 5 times
    DISPLAY "test"
    
 END-PERFORM
-

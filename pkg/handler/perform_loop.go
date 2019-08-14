@@ -1,14 +1,11 @@
 package handler
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
 
 func (d *Data) PerformLoopBlock(tokens []string) {
-
-	fmt.Println(tokens)
 
 	if strings.ToLower(tokens[2]) == "times" {
 		times, _ := strconv.Atoi(tokens[1])
