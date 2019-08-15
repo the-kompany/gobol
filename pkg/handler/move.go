@@ -3,7 +3,9 @@ package handler
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/the-kompany/gobol/utils"
@@ -15,8 +17,9 @@ func (d *Data) Move(val string) {
 
 	splitted := utils.Split(trimmed)
 
-	toLow := strings.ToLower(splitted[2])
-	if toLow != "to" || len(splitted) < 4 {
+	toLow := strings.ToLower(splitted[len(splitted)-2])
+
+	if toLow != "to" {
 		fmt.Println("Error: Inavalid syntax for MOVE")
 		os.Exit(1)
 	}
@@ -67,19 +70,116 @@ func (d *Data) Move(val string) {
 			}
 			d.Vars[splitted[3]] = v
 		}
+	default:
 
-	}
+		var (
+			value      string
+			leftValue  string
+			rightValue string
+			operator   string
+		)
+		valueSplitted := splitted[1 : len(splitted)-2]
 
-	if strings.HasPrefix(splitted[1], "\"") {
-		d.Vars[splitted[3]] = splitted[1]
-	} else {
-		if _, ok := d.Vars[splitted[3]]; !ok {
-			fmt.Println("Error: Undefined variable \"", splitted[1], "\"")
-			os.Exit(1)
+		if len(valueSplitted) > 1 {
+			for k, v := range valueSplitted {
+				trimmedVal := strings.TrimSpace(v)
+
+				if k == 0 {
+					trimmedVal := strings.TrimSpace(valueSplitted[0])
+
+					if trimmedVal[0] != '"' && !isNumeric(trimmedVal) {
+						if _, ok := d.Vars[trimmedVal]; !ok {
+							fmt.Println("Error: Undefined variable \"", trimmedVal, "\"")
+							os.Exit(1)
+						}
+
+						leftValue = d.Vars[trimmedVal]
+					} else {
+						leftValue = trimmedVal
+					}
+				}
+
+				if k == 1 {
+					if trimmedVal != "+" && trimmedVal != "-" && trimmedVal != "*" && trimmedVal != "/" {
+						fmt.Println("Error: Invalid syntax")
+						os.Exit(1)
+					}
+
+					operator = trimmedVal
+
+				}
+
+				if k == 2 {
+					trimmedVal := strings.TrimSpace(trimmedVal)
+
+					if trimmedVal[0] != '"' && !isNumeric(trimmedVal) {
+						if _, ok := d.Vars[trimmedVal]; !ok {
+							fmt.Println("Error: Undefined variable \"", trimmedVal, "\"")
+							os.Exit(1)
+						}
+
+						rightValue = d.Vars[trimmedVal]
+					} else {
+						rightValue = trimmedVal
+					}
+
+				}
+
+			}
+
+			if !isNumeric(leftValue) && !isNumeric(rightValue) {
+				fmt.Println("Error: invalid syntax for move")
+				os.Exit(1)
+			}
+
+			leftValueInt, _ := strconv.Atoi(leftValue)
+			rightValueInt, _ := strconv.Atoi(rightValue)
+
+			var valueInt int
+			switch operator {
+			case "+":
+
+				valueInt = leftValueInt + rightValueInt
+
+				log.Println(leftValue, rightValue, valueInt)
+			case "-":
+				valueInt = leftValueInt - rightValueInt
+
+			case "*":
+				valueInt = leftValueInt * rightValueInt
+
+			case "/":
+				valueInt = leftValueInt / rightValueInt
+
+			}
+
+			value = strconv.Itoa(valueInt)
+
+		} else {
+
+			trimmedVal := strings.TrimSpace(valueSplitted[0])
+
+			if trimmedVal[0] != '"' && !isNumeric(trimmedVal) {
+				if _, ok := d.Vars[trimmedVal]; !ok {
+					fmt.Println("Error: Undefined variable \"", trimmedVal, "\"")
+					os.Exit(1)
+				}
+
+				value = d.Vars[trimmedVal]
+			} else {
+				value = trimmedVal
+			}
+
 		}
 
+		d.Vars[splitted[len(splitted)-1]] = value
 	}
 
+}
+
+func isNumeric(s string) bool {
+	_, err := strconv.ParseFloat(s, 64)
+	return err == nil
 }
 
 func getFuncArg(val string) (string, error) {
