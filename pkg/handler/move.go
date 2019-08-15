@@ -3,7 +3,6 @@ package handler
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -141,7 +140,6 @@ func (d *Data) Move(val string) {
 
 				valueInt = leftValueInt + rightValueInt
 
-				log.Println(leftValue, rightValue, valueInt)
 			case "-":
 				valueInt = leftValueInt - rightValueInt
 

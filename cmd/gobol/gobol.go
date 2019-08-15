@@ -118,6 +118,7 @@ func main() {
 				performstart = false
 				performBlock += " " + l
 				d.Lines = append(d.Lines, handler.Token{Value: performBlock, Line: lineNumber})
+				performBlock = ""
 				continue
 			}
 

@@ -32,3 +32,15 @@ END-PERFORM
 
 OPEN("test.csv") AS data
 
+MOVE 5 TO var8
+MOVE var8 + 2 TO var9
+
+DISPLAY var9
+
+PERFORM UNTIL var8 = 8  
+
+   MOVE var8 + 1 TO var8 
+   DISPLAY "until-test"
+   
+END-PERFORM
+
