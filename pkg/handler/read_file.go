@@ -11,14 +11,14 @@ import (
 
 func (d *Data) Open(val string) {
 
-	arg, err := getFuncArg(val)
+	args, err := getFuncArg(val)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
 
-	arg = arg[1 : len(arg)-1]
+	arg := args[0][1 : len(args[0])-1]
 
 	if !strings.Contains(strings.ToLower(val), "as") {
 		fmt.Printf("Error: as keyword needed to reference the file data\n")

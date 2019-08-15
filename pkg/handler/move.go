@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -10,8 +11,18 @@ import (
 	"github.com/the-kompany/gobol/utils"
 )
 
+type argType int
+
+const (
+	str argType = iota
+	variable
+	fn
+)
+
 func (d *Data) Move(val string) {
 
+	// getType(val, "MOVE")
+	//move + string | variable | function + to + variable
 	trimmed := strings.TrimSpace(val)
 
 	splitted := utils.Split(trimmed)
@@ -61,7 +72,7 @@ func (d *Data) Move(val string) {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		v := d.Accept(arg)
+		v := d.Accept(arg[0])
 		if len(v) > 0 {
 			if _, ok := d.Vars[splitted[3]]; !ok {
 				fmt.Println("Error: Undefined variable \"", splitted[1], "\"")
@@ -69,6 +80,22 @@ func (d *Data) Move(val string) {
 			}
 			d.Vars[splitted[3]] = v
 		}
+	case strings.HasPrefix(funcNameLower, "date2str"):
+		args, err := getFuncArg(funcName)
+
+		if err != nil {
+			log.Println(err)
+		}
+
+		dateStr, err := d.DateToStr(args[0], args[1])
+
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		d.Vars[splitted[3]] = dateStr
+
 	default:
 
 		var (
@@ -180,12 +207,22 @@ func isNumeric(s string) bool {
 	return err == nil
 }
 
-func getFuncArg(val string) (string, error) {
+func getType(val, keyWord string) argType {
+
+	splitted := strings.Split(val, keyWord)
+
+	log.Println("type ", splitted[1])
+
+	return 1
+}
+
+func getFuncArg(val string) ([]string, error) {
 
 	var (
 		ok    = false
 		start = false
 		end   = false
+		args  []string
 		arg   string
 	)
 
@@ -199,18 +236,26 @@ func getFuncArg(val string) (string, error) {
 		if ok {
 			if v == ')' {
 				end = true
+				args = append(args, arg)
+
 				break
+			}
+
+			if v == ',' {
+				args = append(args, arg)
+				arg = ""
+				continue
 			}
 			arg += string(v)
 
 			if v == '\n' && start == true && end == false {
 				err := errors.New("Error: Parenthesis not closed")
-				return arg, err
+				return args, err
 			}
 			continue
 		}
 
 	}
 
-	return arg, nil
+	return args, nil
 }
