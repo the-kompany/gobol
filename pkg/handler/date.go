@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -20,6 +21,14 @@ func (d *Data) DateToStr(date, format string) (string, error) {
 			if err != nil {
 				return "", err
 			}
+		}
+	} else if strings.Contains(date, "-") {
+		layout := "2006-01-02 15:04:05"
+
+		t, err = time.Parse(layout, date)
+
+		if err != nil {
+			log.Println(err)
 		}
 	} else {
 		dateInt, err = strconv.ParseInt(date, 10, 64)
