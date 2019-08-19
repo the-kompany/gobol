@@ -57,6 +57,9 @@ func main() {
 	var trimmed string
 	var lineNumber int
 
+	var recordBlock string
+	var recordStart bool
+
 	//scan eeach line and append to slice
 	//better for parsing
 	for scanner.Scan() {
@@ -127,6 +130,25 @@ func main() {
 			continue
 		}
 
+		if strings.HasPrefix(strings.ToLower(l), "record") {
+			recordStart = true
+			recordBlock += l
+			continue
+		}
+
+		if recordStart == true {
+			if strings.HasPrefix(strings.ToLower(l), "end-record") {
+				recordStart = false
+				recordBlock += " " + l
+				d.Lines = append(d.Lines, handler.Token{Value: recordBlock, Line: lineNumber})
+				recordBlock = ""
+				continue
+			}
+
+			recordBlock += l
+			continue
+		}
+
 		d.Lines = append(d.Lines, handler.Token{Value: trimmed, Line: lineNumber})
 
 	}
@@ -184,6 +206,8 @@ func main() {
 			d.Display(v.Value)
 		case "open":
 			d.Open(v.Value)
+		case "record":
+			d.ExecuteRecord(v.Value)
 		default:
 			fmt.Printf("Error: Undefined %v at line %v \n", firstToken, v.Line)
 		}
