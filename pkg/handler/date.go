@@ -51,19 +51,22 @@ func DateToStr(date, format string) (string, error) {
 	yCount := 0
 	mCount := 0
 	dCount := 0
+	hCount := 0
+	sCount := 0
 	formattedStr := ""
 
 	isDay := false
+	// isMonth := false
 
-	for k, v := range trimmedFormat {
-		switch v {
+	for i := 0; i < len(trimmedFormat); i++ {
+		switch trimmedFormat[i] {
 		case 'y':
 			if isDay {
 				continue
 			}
 			yCount++
 			if yCount == 1 {
-				if trimmedFormat[k+1] != 'y' {
+				if trimmedFormat[i+1] != 'y' {
 					yCount = 0
 					fmt.Println("Error: invalid date format for year")
 					os.Exit(1)
@@ -71,7 +74,7 @@ func DateToStr(date, format string) (string, error) {
 				continue
 			}
 
-			if len(trimmedFormat)-1 == k || trimmedFormat[k+1] != 'y' {
+			if len(trimmedFormat)-1 == i || trimmedFormat[i+1] != 'y' {
 
 				if yCount == 2 {
 					formattedStr += "06"
@@ -80,7 +83,7 @@ func DateToStr(date, format string) (string, error) {
 					formattedStr += "2006"
 					yCount = 0
 				} else {
-					if trimmedFormat[k+1] != 'y' {
+					if trimmedFormat[i+1] != 'y' {
 						yCount = 0
 						fmt.Println("Error: invalid date format for year")
 						os.Exit(1)
@@ -94,44 +97,56 @@ func DateToStr(date, format string) (string, error) {
 			isDay = false
 			mCount++
 
-			if len(trimmedFormat)-1 != k {
+			//handle it for minute: mi
+			if mCount == 1 && trimmedFormat[i+1] == 'i' {
+				formattedStr += "04"
+				mCount = 0
+				continue
+			}
 
-				if trimmedFormat[k+1] == 'o' {
+			if len(trimmedFormat)-1 != i {
 
-					if len(trimmedFormat)-1 < k+3 {
+				if trimmedFormat[i+1] == 'o' {
+
+					if len(trimmedFormat)-1 < i+3 {
 						err := errors.New("Invalid date format")
 						return " ", err
 					}
 
-					if trimmedFormat[k+2] == 'n' && trimmedFormat[k+3] == 't' && trimmedFormat[k+4] == 'h' {
-
+					if trimmedFormat[i+2] == 'n' && trimmedFormat[i+3] == 't' && trimmedFormat[i+4] == 'h' {
+						// isMonth = true
 						formattedStr += "January"
+						i += 4
+						mCount = 0
 						continue
 					} else {
 						err := errors.New("Invalid date format")
 						return " ", err
 					}
 				}
+				// isMonth = false
 			}
 
-			if mCount == 1 {
-				if trimmedFormat[k+1] != 'm' {
-					formattedStr += "Jan"
-					mCount = 0
-					continue
-				}
-			}
+			// if mCount == 1 {
+			// 	if trimmedFormat[i+1] != 'm' {
+			// 		formattedStr += "Jan"
+			// 		mCount = 0
+			// 		continue
+			// 	}
+			// }
 
 			if mCount == 2 {
+				// isMonth = false
 				formattedStr += "Jan"
 				mCount = 0
 			}
 		case 'd':
+			// isMonth = false
 
-			if len(trimmedFormat)-1 != k {
+			if len(trimmedFormat)-1 != i {
 
-				if trimmedFormat[k+1] == 'a' {
-					if trimmedFormat[k+2] == 'y' {
+				if trimmedFormat[i+1] == 'a' {
+					if trimmedFormat[i+2] == 'y' {
 						formattedStr += "Mon"
 						isDay = true
 						continue
@@ -141,7 +156,7 @@ func DateToStr(date, format string) (string, error) {
 
 			dCount++
 			if dCount == 1 {
-				if trimmedFormat[k+1] != 'd' {
+				if trimmedFormat[i+1] != 'd' {
 					formattedStr += "2"
 					dCount = 0
 					isDay = false
@@ -156,6 +171,33 @@ func DateToStr(date, format string) (string, error) {
 			}
 		case ' ':
 			formattedStr += " "
+		case 'h':
+
+			hCount++
+			if hCount == 1 {
+				if trimmedFormat[i+1] != 'h' {
+					err := errors.New("Error: Invalid format for time, hour must be in HH format")
+					return "", err
+				}
+				continue
+			}
+
+			formattedStr += "15"
+		case 's':
+			sCount++
+			if sCount == 1 {
+				if trimmedFormat[i+1] != 's' {
+					err := errors.New("Invalid time format, vlaid time format is hh:mi:ss")
+					return "", err
+				}
+			}
+
+			if sCount == 2 {
+				formattedStr += "05"
+			}
+
+		case ':':
+			formattedStr += ":"
 
 		}
 	}

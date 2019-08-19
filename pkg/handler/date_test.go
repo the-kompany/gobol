@@ -151,4 +151,39 @@ func TestDate2Str(t *testing.T) {
 		t.Errorf("Expected %v, got %v", expected, result)
 	}
 
+	//test hour, minute second
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"hh:mi:ss\"")
+
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+
+	expected = "20:05:25"
+	if result != expected {
+		t.Errorf("Expected %v, got %v", expected, result)
+	}
+
+	//tes hour minute, sec with date
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"dd mm yy hh:mi:ss\"")
+
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+
+	expected = "15 Jan 19 20:05:25"
+	if result != expected {
+		t.Errorf("Expected %v, got %v", expected, result)
+	}
+
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"Month dd yy hh:mi:ss\"")
+
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+
+	expected = "January 15 19 20:05:25"
+	if result != expected {
+		t.Errorf("Expected %v, got %v", expected, result)
+	}
+
 }
