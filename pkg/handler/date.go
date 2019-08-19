@@ -182,7 +182,15 @@ func DateToStr(date, format string) (string, error) {
 				continue
 			}
 
-			formattedStr += "15"
+			if hCount == 2 {
+				//for 24 hour format
+				if trimmedFormat[i+1] == '2' && trimmedFormat[i+2] == '4' {
+					formattedStr += "15"
+				} else {
+					formattedStr += "03"
+				}
+			}
+
 		case 's':
 			sCount++
 			if sCount == 1 {
