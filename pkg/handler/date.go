@@ -206,7 +206,16 @@ func DateToStr(date, format string) (string, error) {
 
 		case ':':
 			formattedStr += ":"
-
+		case 'p':
+			if trimmedFormat[i+1] == '.' {
+				i = i + 2
+				formattedStr += "P.M"
+			} else {
+				i = i + 1
+				formattedStr += "PM"
+			}
+		case '.':
+			formattedStr += "."
 		}
 	}
 

@@ -198,4 +198,16 @@ func TestDate2Str(t *testing.T) {
 		t.Errorf("Expected %v, got %v", expected, result)
 	}
 
+	//test AM/PM
+	result, err = DateToStr("\"2019-01-15 11:05:25\"", "\"Month dd yy hh24:mi:ssPM\"")
+
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+
+	expected = "January 15 19 11:05:25AM"
+	if result != expected {
+		t.Errorf("Expected %v, got %v", expected, result)
+	}
+
 }
