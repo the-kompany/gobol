@@ -127,4 +127,28 @@ func TestDate2Str(t *testing.T) {
 		t.Errorf("Expected %v, got %v", expected, result)
 	}
 
+	//test month full name
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"Month dd yyyy\"")
+
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+
+	expected = "January 15 2019"
+	if result != expected {
+		t.Errorf("Expected %v, got %v", expected, result)
+	}
+
+	//Month in different position as output argument
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"yyyy dd Month\"")
+
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+
+	expected = "2019 15 January"
+	if result != expected {
+		t.Errorf("Expected %v, got %v", expected, result)
+	}
+
 }

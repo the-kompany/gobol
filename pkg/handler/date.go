@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -92,6 +93,27 @@ func DateToStr(date, format string) (string, error) {
 		case 'm':
 			isDay = false
 			mCount++
+
+			if len(trimmedFormat)-1 != k {
+
+				if trimmedFormat[k+1] == 'o' {
+
+					if len(trimmedFormat)-1 < k+3 {
+						err := errors.New("Invalid date format")
+						return " ", err
+					}
+
+					if trimmedFormat[k+2] == 'n' && trimmedFormat[k+3] == 't' && trimmedFormat[k+4] == 'h' {
+
+						formattedStr += "January"
+						continue
+					} else {
+						err := errors.New("Invalid date format")
+						return " ", err
+					}
+				}
+			}
+
 			if mCount == 1 {
 				if trimmedFormat[k+1] != 'm' {
 					formattedStr += "Jan"
