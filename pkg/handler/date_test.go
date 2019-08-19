@@ -103,4 +103,28 @@ func TestDate2Str(t *testing.T) {
 		t.Errorf("Expected %v, got %v", expected, result)
 	}
 
+	//test day name
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"day dd mm\"")
+
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+
+	expected = "Tue 15 Jan"
+	if result != expected {
+		t.Errorf("Expected %v, got %v", expected, result)
+	}
+
+	//test day name at the end
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"dd mm day\"")
+
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+
+	expected = "15 Jan Tue"
+	if result != expected {
+		t.Errorf("Expected %v, got %v", expected, result)
+	}
+
 }

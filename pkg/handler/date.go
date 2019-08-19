@@ -52,9 +52,14 @@ func DateToStr(date, format string) (string, error) {
 	dCount := 0
 	formattedStr := ""
 
+	isDay := false
+
 	for k, v := range trimmedFormat {
 		switch v {
 		case 'y':
+			if isDay {
+				continue
+			}
 			yCount++
 			if yCount == 1 {
 				if trimmedFormat[k+1] != 'y' {
@@ -85,6 +90,7 @@ func DateToStr(date, format string) (string, error) {
 		case '-':
 			formattedStr += "-"
 		case 'm':
+			isDay = false
 			mCount++
 			if mCount == 1 {
 				if trimmedFormat[k+1] != 'm' {
@@ -99,19 +105,35 @@ func DateToStr(date, format string) (string, error) {
 				mCount = 0
 			}
 		case 'd':
+
+			if len(trimmedFormat)-1 != k {
+
+				if trimmedFormat[k+1] == 'a' {
+					if trimmedFormat[k+2] == 'y' {
+						formattedStr += "Mon"
+						isDay = true
+						continue
+					}
+				}
+			}
+
 			dCount++
 			if dCount == 1 {
 				if trimmedFormat[k+1] != 'd' {
 					formattedStr += "2"
 					dCount = 0
+					isDay = false
 					continue
 				}
 			}
 
 			if dCount == 2 {
+				isDay = false
 				formattedStr += "02"
 				dCount = 0
 			}
+		case ' ':
+			formattedStr += " "
 
 		}
 	}
