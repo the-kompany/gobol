@@ -18,13 +18,13 @@ func TestMove(t *testing.T) {
 
 	//test move with date2str function
 
-	dateStr := "MOVE DATE2STR(\"08/07/2019\", \"yy-mm-dd\") TO VAR1"
+	// dateStr := "MOVE DATE2STR(\"08/07/2019\", \"yy-mm-dd\") TO VAR1"
 
-	d.Move(dateStr)
+	// d.Move(dateStr)
 
-	expected := "2019-Aug-07"
-	if d.Vars["VAR1"] != expected {
-		t.Errorf("Expected %v, got %v", expected, d.Vars["VAR1"])
-	}
+	// expected := "2019-Aug-07"
+	// if d.Vars["VAR1"] != expected {
+	// 	t.Errorf("Expected %v, got %v", expected, d.Vars["VAR1"])
+	// }
 
 }

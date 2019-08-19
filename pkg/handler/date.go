@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -43,42 +45,74 @@ func DateToStr(date, format string) (string, error) {
 	trimmedFormat := strings.TrimSpace(format)
 	trimmedFormat = trimmedFormat[1 : len(trimmedFormat)-1]
 
-	splittedFormats := strings.Split(trimmedFormat, "-")
+	trimmedFormat = strings.ToLower(trimmedFormat)
 
-	formatStr := ""
+	yCount := 0
+	mCount := 0
+	dCount := 0
+	formattedStr := ""
 
-	// fmtStr := ""
-
-	// for _, v := range trimmedFormat {
-
-	// 	switch v {
-	// 	case "m":
-
-	// 	}
-
-	// }
-
-	for _, v := range splittedFormats {
-
+	for k, v := range trimmedFormat {
 		switch v {
-		case "mm":
-			if len(formatStr) < 1 {
-				formatStr += "Jan"
-			} else {
-				formatStr += "-Jan"
+		case 'y':
+			yCount++
+			if yCount == 1 {
+				if trimmedFormat[k+1] != 'y' {
+					yCount = 0
+					fmt.Println("Error: invalid date format for year")
+					os.Exit(1)
+				}
+				continue
 			}
-		case "yy":
-			if len(formatStr) < 1 {
-				formatStr += "2006"
-			} else {
-				formatStr += "-2006"
+
+			if len(trimmedFormat)-1 == k || trimmedFormat[k+1] != 'y' {
+
+				if yCount == 2 {
+					formattedStr += "06"
+					yCount = 0
+				} else if yCount == 4 {
+					formattedStr += "2006"
+					yCount = 0
+				} else {
+					if trimmedFormat[k+1] != 'y' {
+						yCount = 0
+						fmt.Println("Error: invalid date format for year")
+						os.Exit(1)
+					}
+				}
 			}
-		case "dd":
-			if len(formatStr) < 1 {
-				formatStr += "02"
-			} else {
-				formatStr += "-02"
+
+		case '-':
+			formattedStr += "-"
+		case 'm':
+			mCount++
+			if mCount == 1 {
+				if trimmedFormat[k+1] != 'm' {
+					formattedStr += "Jan"
+					mCount = 0
+					continue
+				}
 			}
+
+			if mCount == 2 {
+				formattedStr += "Jan"
+				mCount = 0
+			}
+		case 'd':
+			dCount++
+			if dCount == 1 {
+				if trimmedFormat[k+1] != 'd' {
+					formattedStr += "2"
+					dCount = 0
+					continue
+				}
+			}
+
+			if dCount == 2 {
+				formattedStr += "02"
+				dCount = 0
+			}
+
 		}
 	}
 
@@ -87,7 +121,7 @@ func DateToStr(date, format string) (string, error) {
 	if dateInt > 0 {
 
 	} else {
-		formattedDate = t.Format(formatStr)
+		formattedDate = t.Format(formattedStr)
 	}
 
 	return formattedDate, nil
