@@ -1,17 +1,17 @@
 package handler
 
 import (
-	"log"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func (d *Data) DateToStr(date, format string) (string, error) {
+func DateToStr(date, format string) (string, error) {
 
 	var t time.Time
 	var err error
 	var dateInt int64
+
 	if strings.HasPrefix(date, "\"") {
 		date = date[1 : len(date)-1]
 		if strings.Contains(date, "/") {
@@ -21,15 +21,17 @@ func (d *Data) DateToStr(date, format string) (string, error) {
 			if err != nil {
 				return "", err
 			}
-		}
-	} else if strings.Contains(date, "-") {
-		layout := "2006-01-02 15:04:05"
+		} else if strings.Contains(date, "-") {
 
-		t, err = time.Parse(layout, date)
+			layout := "2006-01-02 15:04:05"
 
-		if err != nil {
-			log.Println(err)
+			t, err = time.Parse(layout, date)
+
+			if err != nil {
+				return "", err
+			}
 		}
+
 	} else {
 		dateInt, err = strconv.ParseInt(date, 10, 64)
 
@@ -45,7 +47,19 @@ func (d *Data) DateToStr(date, format string) (string, error) {
 
 	formatStr := ""
 
+	// fmtStr := ""
+
+	// for _, v := range trimmedFormat {
+
+	// 	switch v {
+	// 	case "m":
+
+	// 	}
+
+	// }
+
 	for _, v := range splittedFormats {
+
 		switch v {
 		case "mm":
 			if len(formatStr) < 1 {

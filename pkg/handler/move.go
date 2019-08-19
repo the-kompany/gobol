@@ -87,7 +87,7 @@ func (d *Data) Move(val string) {
 			log.Println(err)
 		}
 
-		dateStr, err := d.DateToStr(args[0], args[1])
+		dateStr, err := DateToStr(args[0], args[1])
 
 		if err != nil {
 			fmt.Println(err)
