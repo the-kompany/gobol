@@ -46,7 +46,11 @@ func (d *Data) Display(val string) {
 	}
 
 	varData := d.Vars[splitted[1]]
-	trimmedQuote := varData[1 : len(varData)-1]
-	fmt.Println(trimmedQuote)
+	if strings.HasPrefix(varData, "\"") && strings.HasSuffix(varData, "\"") {
+		trimmedQuote := varData[1 : len(varData)-1]
+		fmt.Println(trimmedQuote)
+	} else {
+		fmt.Println(varData)
+	}
 
 }

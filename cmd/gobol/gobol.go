@@ -52,15 +52,22 @@ func main() {
 
 	var ifBlock string
 	ifStart := false
+	var performstart bool
+	var performBlock string
 	var trimmed string
+	var lineNumber int
 
 	//scan eeach line and append to slice
 	//better for parsing
 	for scanner.Scan() {
 
 		l := scanner.Text()
+		lineNumber++
 		if ifStart == false {
 			trimmed = strings.TrimSpace(l)
+		} else if performstart == false {
+			trimmed = strings.TrimSpace(l)
+
 		}
 
 		if strings.HasPrefix(trimmed, "//") {
@@ -70,7 +77,7 @@ func main() {
 			i := strings.Index(trimmed, "//")
 			if trimmed[i-1] != '"' {
 				splitted := strings.Split(trimmed, "//")
-				d.Lines = append(d.Lines, strings.TrimSpace(splitted[0]))
+				d.Lines = append(d.Lines, handler.Token{Value: strings.TrimSpace(splitted[0]), Line: lineNumber})
 				continue
 
 			}
@@ -90,7 +97,7 @@ func main() {
 			if strings.HasPrefix(strings.ToLower(l), "end-if") {
 				ifStart = false
 				ifBlock += l
-				d.Lines = append(d.Lines, ifBlock)
+				d.Lines = append(d.Lines, handler.Token{Value: ifBlock, Line: lineNumber})
 				continue
 			}
 
@@ -99,7 +106,28 @@ func main() {
 			continue
 		}
 
-		d.Lines = append(d.Lines, trimmed)
+		if strings.HasPrefix(strings.ToLower(l), "perform") {
+			performstart = true
+			performBlock += l
+			continue
+		}
+
+		if performstart == true {
+
+			if strings.HasPrefix(strings.ToLower(l), "end-perform") {
+				performstart = false
+				performBlock += " " + l
+				d.Lines = append(d.Lines, handler.Token{Value: performBlock, Line: lineNumber})
+				performBlock = ""
+				continue
+			}
+
+			performBlock += l
+
+			continue
+		}
+
+		d.Lines = append(d.Lines, handler.Token{Value: trimmed, Line: lineNumber})
 
 	}
 
@@ -116,7 +144,7 @@ func main() {
 
 	for _, v := range d.Lines {
 
-		token := strings.SplitAfter(v, " ")
+		token := strings.SplitAfter(v.Value, " ")
 
 		tokenTrimmed := strings.ToLower(strings.TrimSpace(token[0]))
 
@@ -129,25 +157,35 @@ func main() {
 		}
 
 		switch firstToken {
+		case "perform":
+			if tokens, err := parser.ValidPerformBlock(v.Value); err != nil {
+				fmt.Println("Syntax error: invalid PERFORM block at line ", v.Line)
+				os.Exit(1)
+			} else {
+				d.PerformLoopBlock(tokens)
+			}
+
 		case "if":
-			if !parser.ValidIfBlock(v) {
-				fmt.Println("Syntax error: invalid if block at line ")
+			if !parser.ValidIfBlock(v.Value) {
+				fmt.Println("Syntax error: invalid if block at line ", v.Line)
 				os.Exit(1)
 			}
 
-			d.IfBlock(v)
+			d.IfBlock(v.Value)
 
 		case "move":
-			d.Move(v)
+			d.Move(v.Value)
 			continue
 		case "upshift":
-			d.Shift(v, "", 1)
+			d.Shift(v.Value, "", 1)
 		case "downshift":
-			d.Shift(v, "", 0)
+			d.Shift(v.Value, "", 0)
 		case "display":
-			d.Display(v)
+			d.Display(v.Value)
+		case "open":
+			d.Open(v.Value)
 		default:
-			fmt.Printf("Error: Undefined %v in %v", firstToken, v)
+			fmt.Printf("Error: Undefined %v at line %v \n", firstToken, v.Line)
 		}
 	}
 
