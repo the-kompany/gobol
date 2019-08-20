@@ -3,43 +3,65 @@ package handler
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func DateToStr(date, format string) (string, error) {
+func DateToStr(date, inputFormat, format string) (string, error) {
 
 	var t time.Time
 	var err error
 	var dateInt int64
 
-	if strings.HasPrefix(date, "\"") {
-		date = date[1 : len(date)-1]
-		if strings.Contains(date, "/") {
+	if len(inputFormat) > 0 {
+		log.Println(inputFormat)
 
+		date = date[1 : len(date)-1]
+		if inputFormat[0] == 'd' && inputFormat[1] == 'd' {
+			t, err = time.Parse("02/01/2006", date)
+
+			if err != nil {
+				return "", err
+			}
+		} else if inputFormat[0] == 'm' && inputFormat[1] == 'm' {
 			t, err = time.Parse("01/02/2006", date)
 
 			if err != nil {
 				return "", err
 			}
-		} else if strings.Contains(date, "-") {
 
-			layout := "2006-01-02 15:04:05"
+		}
 
-			t, err = time.Parse(layout, date)
+	} else {
+		if strings.HasPrefix(date, "\"") {
+			date = date[1 : len(date)-1]
+			if strings.Contains(date, "/") {
+
+				t, err = time.Parse("01/02/2006", date)
+
+				if err != nil {
+					return "", err
+				}
+			} else if strings.Contains(date, "-") {
+
+				layout := "2006-01-02 15:04:05"
+
+				t, err = time.Parse(layout, date)
+
+				if err != nil {
+					return "", err
+				}
+			}
+
+		} else {
+			dateInt, err = strconv.ParseInt(date, 10, 64)
 
 			if err != nil {
 				return "", err
 			}
-		}
-
-	} else {
-		dateInt, err = strconv.ParseInt(date, 10, 64)
-
-		if err != nil {
-			return "", err
 		}
 	}
 

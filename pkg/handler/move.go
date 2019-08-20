@@ -80,14 +80,19 @@ func (d *Data) Move(val string) {
 			}
 			d.Vars[splitted[3]] = v
 		}
-	case strings.HasPrefix(funcNameLower, "date2str"):
+	case strings.HasPrefix(funcNameLower, "fmtdate"):
 		args, err := getFuncArg(funcName)
 
 		if err != nil {
 			log.Println(err)
 		}
 
-		dateStr, err := DateToStr(args[0], args[1])
+		var inputFormat string
+		if len(args) == 3 {
+			inputFormat = args[2]
+		}
+
+		dateStr, err := DateToStr(args[0], inputFormat, args[1])
 
 		if err != nil {
 			fmt.Println(err)

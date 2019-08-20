@@ -25,6 +25,7 @@ const (
 func main() {
 
 	//TODO get the filename from argument
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	args := os.Args
 

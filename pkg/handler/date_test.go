@@ -6,7 +6,7 @@ import (
 
 func TestDate2Str(t *testing.T) {
 
-	result, err := DateToStr("\"08/07/2019\"", "\"yy-mm-dd\"")
+	result, err := DateToStr("\"08/07/2019\"", "", "\"yy-mm-dd\"")
 
 	if err != nil {
 		t.Errorf("%v", err)
@@ -17,7 +17,7 @@ func TestDate2Str(t *testing.T) {
 		t.Errorf("Expected %v, got %v", expected, result)
 	}
 
-	result, err = DateToStr("\"08/07/2019\"", "\"dd-mm-yy\"")
+	result, err = DateToStr("\"08/07/2019\"", "", "\"dd-mm-yy\"")
 
 	if err != nil {
 		t.Errorf("%v", err)
@@ -30,7 +30,7 @@ func TestDate2Str(t *testing.T) {
 
 	//test mysql date-time
 
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"yy-mm-dd\"")
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "", "\"yy-mm-dd\"")
 
 	if err != nil {
 		t.Errorf("%v", err)
@@ -42,7 +42,7 @@ func TestDate2Str(t *testing.T) {
 	}
 
 	//test dd-mm-yy
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"dd-mm-yy\"")
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "", "\"dd-mm-yy\"")
 
 	if err != nil {
 		t.Errorf("%v", err)
@@ -54,7 +54,7 @@ func TestDate2Str(t *testing.T) {
 	}
 
 	//test year 4 digit dd-mm-yyyy
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"dd-mm-yyyy\"")
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "", "\"dd-mm-yyyy\"")
 
 	if err != nil {
 		t.Errorf("%v", err)
@@ -66,7 +66,7 @@ func TestDate2Str(t *testing.T) {
 	}
 
 	//test 4 digit year in the begining
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"yyyy-mm-dd\"")
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "", "\"yyyy-mm-dd\"")
 
 	if err != nil {
 		t.Errorf("%v", err)
@@ -79,7 +79,7 @@ func TestDate2Str(t *testing.T) {
 
 	//test for no dash in the dat eformat
 
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"yyyymmdd\"")
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "", "\"yyyymmdd\"")
 
 	if err != nil {
 		t.Errorf("%v", err)
@@ -92,7 +92,7 @@ func TestDate2Str(t *testing.T) {
 
 	//test uppercase
 
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"YYYYMMDD\"")
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "", "\"YYYYMMDD\"")
 
 	if err != nil {
 		t.Errorf("%v", err)
@@ -104,7 +104,7 @@ func TestDate2Str(t *testing.T) {
 	}
 
 	//test day name
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"day dd mm\"")
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "", "\"day dd mm\"")
 
 	if err != nil {
 		t.Errorf("%v", err)
@@ -116,7 +116,7 @@ func TestDate2Str(t *testing.T) {
 	}
 
 	//test day name at the end
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"dd mm day\"")
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "", "\"dd mm day\"")
 
 	if err != nil {
 		t.Errorf("%v", err)
@@ -128,7 +128,7 @@ func TestDate2Str(t *testing.T) {
 	}
 
 	//test month full name
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"Month dd yyyy\"")
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "", "\"Month dd yyyy\"")
 
 	if err != nil {
 		t.Errorf("%v", err)
@@ -140,7 +140,7 @@ func TestDate2Str(t *testing.T) {
 	}
 
 	//Month in different position as output argument
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"yyyy dd Month\"")
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "", "\"yyyy dd Month\"")
 
 	if err != nil {
 		t.Errorf("%v", err)
@@ -152,7 +152,7 @@ func TestDate2Str(t *testing.T) {
 	}
 
 	//test hour, minute second
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"hh:mi:ss\"")
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "", "\"hh:mi:ss\"")
 
 	if err != nil {
 		t.Errorf("%v", err)
@@ -164,7 +164,7 @@ func TestDate2Str(t *testing.T) {
 	}
 
 	//tes hour minute, sec with date
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"dd mm yy hh:mi:ss\"")
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "", "\"dd mm yy hh:mi:ss\"")
 
 	if err != nil {
 		t.Errorf("%v", err)
@@ -175,7 +175,7 @@ func TestDate2Str(t *testing.T) {
 		t.Errorf("Expected %v, got %v", expected, result)
 	}
 
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"Month dd yy hh:mi:ss\"")
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "", "\"Month dd yy hh:mi:ss\"")
 
 	if err != nil {
 		t.Errorf("%v", err)
@@ -187,7 +187,7 @@ func TestDate2Str(t *testing.T) {
 	}
 
 	//test for 24 hour format
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"Month dd yy hh24:mi:ss\"")
+	result, err = DateToStr("\"2019-01-15 20:05:25\"", "", "\"Month dd yy hh24:mi:ss\"")
 
 	if err != nil {
 		t.Errorf("%v", err)
@@ -199,13 +199,26 @@ func TestDate2Str(t *testing.T) {
 	}
 
 	//test AM/PM
-	result, err = DateToStr("\"2019-01-15 11:05:25\"", "\"Month dd yy hh24:mi:ssPM\"")
+	result, err = DateToStr("\"2019-01-15 11:05:25\"", "", "\"Month dd yy hh24:mi:ssPM\"")
 
 	if err != nil {
 		t.Errorf("%v", err)
 	}
 
 	expected = "January 15 19 11:05:25AM"
+	if result != expected {
+		t.Errorf("Expected %v, got %v", expected, result)
+	}
+
+	//test for input format
+	//test AM/PM
+	result, err = DateToStr("\"08/07/2019\"", "dd-mm-yyyy", "\"dd-mm-yyyy\"")
+
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+
+	expected = "08-Jul-2019"
 	if result != expected {
 		t.Errorf("Expected %v, got %v", expected, result)
 	}
