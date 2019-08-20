@@ -3,7 +3,6 @@ package handler
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -16,8 +15,14 @@ func DateToStr(date, inputFormat, format string) (string, error) {
 	var err error
 	var dateInt int64
 
+	inputFormat = strings.TrimSpace(inputFormat)
+
 	if len(inputFormat) > 0 {
-		log.Println(inputFormat)
+
+		if strings.HasPrefix(inputFormat, "\"") {
+
+			inputFormat = inputFormat[1 : len(inputFormat)-1]
+		}
 
 		date = date[1 : len(date)-1]
 		if inputFormat[0] == 'd' && inputFormat[1] == 'd' {
