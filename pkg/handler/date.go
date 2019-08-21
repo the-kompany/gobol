@@ -256,3 +256,31 @@ func getDateLayout(dateStr string) (string, error) {
 	return formattedStr, nil
 
 }
+
+func (d *Data) CurrentDate() string {
+
+	t := time.Now()
+
+	formattedStr := t.Format("01-02-2006")
+
+	return formattedStr
+
+}
+
+func (d *Data) CurrentTime() string {
+
+	t := time.Now()
+
+	formattedStr := t.Format("03:04:05pm")
+
+	return formattedStr
+
+}
+
+func (d *Data) CurrentDateTime() string {
+	t := time.Now()
+
+	formattedStr := t.Format("01-02-2006 03:04:05pm")
+
+	return formattedStr
+}

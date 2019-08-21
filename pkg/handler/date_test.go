@@ -37,6 +37,7 @@ var testCasesDateLayout = []struct {
 	{"mm-dd-yyyy", "01-02-2006"},
 	{"mmddyyyy", "01022006"},
 	{"dd-mm-yyyy", "02-01-2006"},
+	{"mm/dd/yyyy", "01/02/2006"},
 	//TODO add more test for edge cases
 }
 
