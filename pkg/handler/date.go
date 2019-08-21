@@ -75,6 +75,26 @@ func DateToStr(date, inputFormat, format string) (string, error) {
 
 	trimmedFormat = strings.ToLower(trimmedFormat)
 
+	var formattedDate string
+
+	formattedStr, err := getDateLayout(trimmedFormat)
+
+	if err != nil {
+		return "", err
+	}
+
+	if dateInt > 0 {
+
+	} else {
+		formattedDate = t.Format(formattedStr)
+	}
+
+	return formattedDate, nil
+
+}
+
+func getDateLayout(dateStr string) (string, error) {
+
 	yCount := 0
 	mCount := 0
 	dCount := 0
@@ -85,15 +105,15 @@ func DateToStr(date, inputFormat, format string) (string, error) {
 	isDay := false
 	// isMonth := false
 
-	for i := 0; i < len(trimmedFormat); i++ {
-		switch trimmedFormat[i] {
+	for i := 0; i < len(dateStr); i++ {
+		switch dateStr[i] {
 		case 'y':
 			if isDay {
 				continue
 			}
 			yCount++
 			if yCount == 1 {
-				if trimmedFormat[i+1] != 'y' {
+				if dateStr[i+1] != 'y' {
 					yCount = 0
 					fmt.Println("Error: invalid date format for year")
 					os.Exit(1)
@@ -101,7 +121,7 @@ func DateToStr(date, inputFormat, format string) (string, error) {
 				continue
 			}
 
-			if len(trimmedFormat)-1 == i || trimmedFormat[i+1] != 'y' {
+			if len(dateStr)-1 == i || dateStr[i+1] != 'y' {
 
 				if yCount == 2 {
 					formattedStr += "06"
@@ -110,7 +130,7 @@ func DateToStr(date, inputFormat, format string) (string, error) {
 					formattedStr += "2006"
 					yCount = 0
 				} else {
-					if trimmedFormat[i+1] != 'y' {
+					if dateStr[i+1] != 'y' {
 						yCount = 0
 						fmt.Println("Error: invalid date format for year")
 						os.Exit(1)
@@ -125,22 +145,22 @@ func DateToStr(date, inputFormat, format string) (string, error) {
 			mCount++
 
 			//handle it for minute: mi
-			if mCount == 1 && trimmedFormat[i+1] == 'i' {
+			if mCount == 1 && dateStr[i+1] == 'i' {
 				formattedStr += "04"
 				mCount = 0
 				continue
 			}
 
-			if len(trimmedFormat)-1 != i {
+			if len(dateStr)-1 != i {
 
-				if trimmedFormat[i+1] == 'o' {
+				if dateStr[i+1] == 'o' {
 
-					if len(trimmedFormat)-1 < i+3 {
+					if len(dateStr)-1 < i+3 {
 						err := errors.New("Invalid date format")
 						return " ", err
 					}
 
-					if trimmedFormat[i+2] == 'n' && trimmedFormat[i+3] == 't' && trimmedFormat[i+4] == 'h' {
+					if dateStr[i+2] == 'n' && dateStr[i+3] == 't' && dateStr[i+4] == 'h' {
 						// isMonth = true
 						formattedStr += "January"
 						i += 4
@@ -170,10 +190,10 @@ func DateToStr(date, inputFormat, format string) (string, error) {
 		case 'd':
 			// isMonth = false
 
-			if len(trimmedFormat)-1 != i {
+			if len(dateStr)-1 != i {
 
-				if trimmedFormat[i+1] == 'a' {
-					if trimmedFormat[i+2] == 'y' {
+				if dateStr[i+1] == 'a' {
+					if dateStr[i+2] == 'y' {
 						formattedStr += "Mon"
 						isDay = true
 						continue
@@ -183,7 +203,7 @@ func DateToStr(date, inputFormat, format string) (string, error) {
 
 			dCount++
 			if dCount == 1 {
-				if trimmedFormat[i+1] != 'd' {
+				if dateStr[i+1] != 'd' {
 					formattedStr += "2"
 					dCount = 0
 					isDay = false
@@ -202,7 +222,7 @@ func DateToStr(date, inputFormat, format string) (string, error) {
 
 			hCount++
 			if hCount == 1 {
-				if trimmedFormat[i+1] != 'h' {
+				if dateStr[i+1] != 'h' {
 					err := errors.New("Error: Invalid format for time, hour must be in HH format")
 					return "", err
 				}
@@ -211,7 +231,7 @@ func DateToStr(date, inputFormat, format string) (string, error) {
 
 			if hCount == 2 {
 				//for 24 hour format
-				if trimmedFormat[i+1] == '2' && trimmedFormat[i+2] == '4' {
+				if dateStr[i+1] == '2' && dateStr[i+2] == '4' {
 					formattedStr += "15"
 				} else {
 					formattedStr += "03"
@@ -221,7 +241,7 @@ func DateToStr(date, inputFormat, format string) (string, error) {
 		case 's':
 			sCount++
 			if sCount == 1 {
-				if trimmedFormat[i+1] != 's' {
+				if dateStr[i+1] != 's' {
 					err := errors.New("Invalid time format, vlaid time format is hh:mi:ss")
 					return "", err
 				}
@@ -234,7 +254,7 @@ func DateToStr(date, inputFormat, format string) (string, error) {
 		case ':':
 			formattedStr += ":"
 		case 'p':
-			if trimmedFormat[i+1] == '.' {
+			if dateStr[i+1] == '.' {
 				i = i + 2
 				formattedStr += "P.M"
 			} else {
@@ -246,14 +266,6 @@ func DateToStr(date, inputFormat, format string) (string, error) {
 		}
 	}
 
-	var formattedDate string
-
-	if dateInt > 0 {
-
-	} else {
-		formattedDate = t.Format(formattedStr)
-	}
-
-	return formattedDate, nil
+	return formattedStr, nil
 
 }
