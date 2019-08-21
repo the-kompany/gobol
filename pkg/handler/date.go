@@ -29,6 +29,8 @@ func DateToStr(date, inputFormat, format string) (string, error) {
 			inputFormat = inputFormat[1 : len(inputFormat)-1]
 		}
 
+		inputFormat = strings.ToLower(inputFormat)
+
 		dateInput, err := getDateLayout(inputFormat)
 
 		if err != nil {
