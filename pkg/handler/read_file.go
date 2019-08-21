@@ -4,7 +4,6 @@ import (
 	"encoding/csv"
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 )
@@ -41,13 +40,11 @@ func (d *Data) Open(val string) {
 		os.Exit(1)
 	}
 
-	file := &File{}
+	d.File = make(map[string][][]string)
 
-	file.Data = make(map[string][][]string)
+	d.File[referenceID] = lines
 
-	file.Data[referenceID] = lines
-
-	log.Println("file data", file.Data["data"])
+	// log.Println("file data", d.File[referenceID])
 }
 
 func ReadFile(filePath string) ([][]string, error) {

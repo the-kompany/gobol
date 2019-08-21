@@ -40,17 +40,23 @@ func (d *Data) Display(val string) {
 		return
 
 	}
-	if _, ok := d.Vars[splitted[1]]; !ok {
+
+	if strings.Contains(splitted[1], ".") {
+
+		splittedRecordName := strings.Split(splitted[1], ".")
+		fmt.Println(d.Record[splittedRecordName[0]][splittedRecordName[1]])
+
+	} else if _, ok := d.Vars[splitted[1]]; !ok {
 		fmt.Println("Error: Undefined variable \"", splitted[1], "\"")
 		os.Exit(1)
-	}
-
-	varData := d.Vars[splitted[1]]
-	if strings.HasPrefix(varData, "\"") && strings.HasSuffix(varData, "\"") {
-		trimmedQuote := varData[1 : len(varData)-1]
-		fmt.Println(trimmedQuote)
 	} else {
-		fmt.Println(varData)
+		varData := d.Vars[splitted[1]]
+		if strings.HasPrefix(varData, "\"") && strings.HasSuffix(varData, "\"") {
+			trimmedQuote := varData[1 : len(varData)-1]
+			fmt.Println(trimmedQuote)
+		} else {
+			fmt.Println(varData)
+		}
 	}
 
 }

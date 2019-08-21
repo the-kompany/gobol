@@ -4,210 +4,72 @@ import (
 	"testing"
 )
 
+var dateTestCases = []struct {
+	input        string
+	inputFormat  string
+	outputFormat string
+	expected     string
+}{
+	{"\"19/08/15\"", "yy/mm/dd", "\"yy-mm-dd\"", "19-08-15"},
+	{"\"08/07/2019\"", "mm/dd/yyyy", "\"dd-mm-yy\"", "07-08-19"},
+	{"\"08-07-2019\"", "mm-dd-yyyy", "\"yy-mm-dd\"", "19-08-07"},
+	{"\"08-15-2019\"", "mm-dd-yyyy", "\"dd-mm-yy\"", "15-08-19"},
+	{"\"08-15-2019\"", "mm-dd-yyyy", "\"dd-mm-yyyy\"", "15-08-2019"}, // //test year 4 digit dd-mm-yyyy
+	{"\"08-15-2019\"", "mm-dd-yyyy", "\"yyyy-mm-dd\"", "2019-08-15"}, //test 4 digit year in the begining
+	{"\"08-15-2019\"", "mm-dd-yyyy", "\"yyyymmdd\"", "20190815"},
+	{"\"08-15-2019\"", "mm-dd-yyyy", "\"YYYYMMDD\"", "20190815"},                     //test uppercase
+	{"\"08-15-2019\"", "mm-dd-yyyy", "\"day dd mm\"", "Thu 15 08"},                   //day by name
+	{"\"08-15-2019\"", "mm-dd-yyyy", "\"dd mm day\"", "15 08 Thu"},                   //day name at the end
+	{"\"08-15-2019\"", "mm-dd-yyyy", "\"Month dd yyyy\"", "August 15 2019"},          //month full name
+	{"\"08-15-2019\"", "mm-dd-yyyy", "\"yyyy dd Month\"", "2019 15 August"},          //Month in different position as output argument
+	{"\"2019-01-15 20:05:25\"", "yyyy-mm-dd hh24:mi:ss", "\"hh:mi:ss\"", "08:05:25"}, //hour, minute second
+	{"\"2019-01-15 20:05:25\"", "yyyy-mm-dd hh24:mi:ss", "\"dd mm yy hh:mi:ss\"", "15 01 19 08:05:25"},
+	{"\"2019-01-15 20:05:25\"", "yyyy-mm-dd hh24:mi:ss", "\"Month dd yy hh:mi:ss\"", "January 15 19 08:05:25"},
+	{"\"2019-01-15 20:05:25\"", "yyyy-mm-dd hh24:mi:ss", "\"Month dd yy hh24:mi:ss\"", "January 15 19 20:05:25"},
+	{"\"2019-01-15 11:05:25\"", "yyyy-mm-dd hh24:mi:ss", "\"Month dd yy hh24:mi:ssPM\"", "January 15 19 11:05:25AM"},
+	{"\"08/15/2019\"", "mm/dd/yyyy", "\"dd-mm-yyyy\"", "15-08-2019"},
+}
+
+var testCasesDateLayout = []struct {
+	input    string
+	expected string
+}{
+	{"mm-dd-yyyy", "01-02-2006"},
+	{"mmddyyyy", "01022006"},
+	{"dd-mm-yyyy", "02-01-2006"},
+	//TODO add more test for edge cases
+}
+
 func TestDate2Str(t *testing.T) {
 
-	result, err := DateToStr("\"08/07/2019\"", "\"yy-mm-dd\"")
+	for _, v := range dateTestCases {
 
-	if err != nil {
-		t.Errorf("%v", err)
+		got, err := DateToStr(v.input, v.inputFormat, v.outputFormat)
+
+		if err != nil {
+			t.Errorf("Expected %v, got %v", v.expected, err)
+		}
+
+		if v.expected != got {
+			t.Errorf("Expected %v, got %v", v.expected, got)
+		}
 	}
 
-	expected := "19-Aug-07"
-	if result != expected {
-		t.Errorf("Expected %v, got %v", expected, result)
-	}
+}
 
-	result, err = DateToStr("\"08/07/2019\"", "\"dd-mm-yy\"")
+func TestGetDateLayout(t *testing.T) {
 
-	if err != nil {
-		t.Errorf("%v", err)
-	}
+	for _, v := range testCasesDateLayout {
 
-	expected = "07-Aug-19"
-	if result != expected {
-		t.Errorf("Expected %v, got %v", expected, result)
-	}
+		got, err := getDateLayout(v.input)
 
-	//test mysql date-time
+		if err != nil {
+			t.Errorf("Expected %v got %v", v.expected, err)
+		}
 
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"yy-mm-dd\"")
-
-	if err != nil {
-		t.Errorf("%v", err)
-	}
-
-	expected = "19-Jan-15"
-	if result != expected {
-		t.Errorf("Expected %v, got %v", expected, result)
-	}
-
-	//test dd-mm-yy
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"dd-mm-yy\"")
-
-	if err != nil {
-		t.Errorf("%v", err)
-	}
-
-	expected = "15-Jan-19"
-	if result != expected {
-		t.Errorf("Expected %v, got %v", expected, result)
-	}
-
-	//test year 4 digit dd-mm-yyyy
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"dd-mm-yyyy\"")
-
-	if err != nil {
-		t.Errorf("%v", err)
-	}
-
-	expected = "15-Jan-2019"
-	if result != expected {
-		t.Errorf("Expected %v, got %v", expected, result)
-	}
-
-	//test 4 digit year in the begining
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"yyyy-mm-dd\"")
-
-	if err != nil {
-		t.Errorf("%v", err)
-	}
-
-	expected = "2019-Jan-15"
-	if result != expected {
-		t.Errorf("Expected %v, got %v", expected, result)
-	}
-
-	//test for no dash in the dat eformat
-
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"yyyymmdd\"")
-
-	if err != nil {
-		t.Errorf("%v", err)
-	}
-
-	expected = "2019Jan15"
-	if result != expected {
-		t.Errorf("Expected %v, got %v", expected, result)
-	}
-
-	//test uppercase
-
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"YYYYMMDD\"")
-
-	if err != nil {
-		t.Errorf("%v", err)
-	}
-
-	expected = "2019Jan15"
-	if result != expected {
-		t.Errorf("Expected %v, got %v", expected, result)
-	}
-
-	//test day name
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"day dd mm\"")
-
-	if err != nil {
-		t.Errorf("%v", err)
-	}
-
-	expected = "Tue 15 Jan"
-	if result != expected {
-		t.Errorf("Expected %v, got %v", expected, result)
-	}
-
-	//test day name at the end
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"dd mm day\"")
-
-	if err != nil {
-		t.Errorf("%v", err)
-	}
-
-	expected = "15 Jan Tue"
-	if result != expected {
-		t.Errorf("Expected %v, got %v", expected, result)
-	}
-
-	//test month full name
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"Month dd yyyy\"")
-
-	if err != nil {
-		t.Errorf("%v", err)
-	}
-
-	expected = "January 15 2019"
-	if result != expected {
-		t.Errorf("Expected %v, got %v", expected, result)
-	}
-
-	//Month in different position as output argument
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"yyyy dd Month\"")
-
-	if err != nil {
-		t.Errorf("%v", err)
-	}
-
-	expected = "2019 15 January"
-	if result != expected {
-		t.Errorf("Expected %v, got %v", expected, result)
-	}
-
-	//test hour, minute second
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"hh:mi:ss\"")
-
-	if err != nil {
-		t.Errorf("%v", err)
-	}
-
-	expected = "08:05:25"
-	if result != expected {
-		t.Errorf("Expected %v, got %v", expected, result)
-	}
-
-	//tes hour minute, sec with date
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"dd mm yy hh:mi:ss\"")
-
-	if err != nil {
-		t.Errorf("%v", err)
-	}
-
-	expected = "15 Jan 19 08:05:25"
-	if result != expected {
-		t.Errorf("Expected %v, got %v", expected, result)
-	}
-
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"Month dd yy hh:mi:ss\"")
-
-	if err != nil {
-		t.Errorf("%v", err)
-	}
-
-	expected = "January 15 19 08:05:25"
-	if result != expected {
-		t.Errorf("Expected %v, got %v", expected, result)
-	}
-
-	//test for 24 hour format
-	result, err = DateToStr("\"2019-01-15 20:05:25\"", "\"Month dd yy hh24:mi:ss\"")
-
-	if err != nil {
-		t.Errorf("%v", err)
-	}
-
-	expected = "January 15 19 20:05:25"
-	if result != expected {
-		t.Errorf("Expected %v, got %v", expected, result)
-	}
-
-	//test AM/PM
-	result, err = DateToStr("\"2019-01-15 11:05:25\"", "\"Month dd yy hh24:mi:ssPM\"")
-
-	if err != nil {
-		t.Errorf("%v", err)
-	}
-
-	expected = "January 15 19 11:05:25AM"
-	if result != expected {
-		t.Errorf("Expected %v, got %v", expected, result)
+		if v.expected != got {
+			t.Errorf("Expected %v, got %v", v.expected, got)
+		}
 	}
 
 }
