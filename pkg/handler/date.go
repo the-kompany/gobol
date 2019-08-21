@@ -17,6 +17,11 @@ func DateToStr(date, inputFormat, format string) (string, error) {
 
 	inputFormat = strings.TrimSpace(inputFormat)
 
+	if len(inputFormat) < 1 {
+		err := errors.New("Input format is required")
+		return "", err
+	}
+
 	if len(inputFormat) > 0 {
 
 		if strings.HasPrefix(inputFormat, "\"") {
@@ -24,50 +29,30 @@ func DateToStr(date, inputFormat, format string) (string, error) {
 			inputFormat = inputFormat[1 : len(inputFormat)-1]
 		}
 
+		dateInput, err := getDateLayout(inputFormat)
+
+		if err != nil {
+			err = errors.New("Inavlid input date format: " + err.Error())
+			return "", err
+		}
+
 		date = date[1 : len(date)-1]
-		if inputFormat[0] == 'd' && inputFormat[1] == 'd' {
-			t, err = time.Parse("02/01/2006", date)
 
-			if err != nil {
-				return "", err
-			}
-		} else if inputFormat[0] == 'm' && inputFormat[1] == 'm' {
-			t, err = time.Parse("01/02/2006", date)
+		t, err = time.Parse(dateInput, date)
 
-			if err != nil {
-				return "", err
-			}
-
+		if err != nil {
+			err = errors.New("Inavlid date format: " + err.Error())
+			return "", err
 		}
 
 	} else {
-		if strings.HasPrefix(date, "\"") {
-			date = date[1 : len(date)-1]
-			if strings.Contains(date, "/") {
 
-				t, err = time.Parse("01/02/2006", date)
+		dateInt, err = strconv.ParseInt(date, 10, 64)
 
-				if err != nil {
-					return "", err
-				}
-			} else if strings.Contains(date, "-") {
-
-				layout := "2006-01-02 15:04:05"
-
-				t, err = time.Parse(layout, date)
-
-				if err != nil {
-					return "", err
-				}
-			}
-
-		} else {
-			dateInt, err = strconv.ParseInt(date, 10, 64)
-
-			if err != nil {
-				return "", err
-			}
+		if err != nil {
+			return "", err
 		}
+
 	}
 
 	trimmedFormat := strings.TrimSpace(format)
@@ -140,6 +125,8 @@ func getDateLayout(dateStr string) (string, error) {
 
 		case '-':
 			formattedStr += "-"
+		case '/':
+			formattedStr += "/"
 		case 'm':
 			isDay = false
 			mCount++
@@ -184,7 +171,7 @@ func getDateLayout(dateStr string) (string, error) {
 
 			if mCount == 2 {
 				// isMonth = false
-				formattedStr += "Jan"
+				formattedStr += "01"
 				mCount = 0
 			}
 		case 'd':

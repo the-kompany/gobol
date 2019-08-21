@@ -65,6 +65,6 @@ PERFORM READ data INTO MYTHING
 
 END-PERFORM 
 
-MOVE FMTDATE("09/07/2019", "mm-dd-yy", "mm-dd-yyyy") TO VAR1 
-MOVE FMTDATE("09/07/2019", "mm-dd-yyyy") TO VAR1
+MOVE FMTDATE("01/15/2019", "mm/dd/yy", "mm-dd-yyyy") TO VAR1 
+//MOVE FMTDATE("09/07/2019", "mm-dd-yyyy") TO VAR1
 DISPLAY VAR1
