@@ -43,9 +43,10 @@ var testCasesDateLayout = []struct {
 
 func TestDate2Str(t *testing.T) {
 
+	d := &Data{}
 	for _, v := range dateTestCases {
 
-		got, err := DateToStr(v.input, v.inputFormat, v.outputFormat)
+		got, err := DateToStr(d, v.input, v.inputFormat, v.outputFormat)
 
 		if err != nil {
 			t.Errorf("Expected %v, got %v", v.expected, err)

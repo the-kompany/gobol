@@ -9,13 +9,23 @@ import (
 	"time"
 )
 
-func DateToStr(date, inputFormat, format string) (string, error) {
+func DateToStr(d *Data, date, inputFormat, format string) (string, error) {
 
 	var t time.Time
 	var err error
 	var dateInt int64
 
 	inputFormat = strings.TrimSpace(inputFormat)
+
+	if !strings.HasPrefix(strings.TrimSpace(date), "\"") {
+		if v, ok := d.Vars[date]; !ok {
+			fmt.Println("Error: undefined variable ", date, "at line", d.Line)
+			os.Exit(1)
+		} else {
+			date = v
+		}
+
+	}
 
 	if len(inputFormat) < 1 {
 		err := errors.New("Input format is required")
