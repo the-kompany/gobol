@@ -84,15 +84,15 @@ func (d *Data) Move(val string) {
 		args, err := getFuncArg(funcName)
 
 		if err != nil {
-			log.Println(err)
+			log.Println("Err at line ", d.Line, err)
 		}
 
 		var inputFormat string
 		if len(args) == 3 {
-			inputFormat = args[2]
+			inputFormat = args[1]
 		}
 
-		dateStr, err := DateToStr(args[0], inputFormat, args[2])
+		dateStr, err := DateToStr(d, args[0], inputFormat, args[2])
 
 		if err != nil {
 			fmt.Println(err)

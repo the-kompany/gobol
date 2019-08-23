@@ -37,14 +37,16 @@ var testCasesDateLayout = []struct {
 	{"mm-dd-yyyy", "01-02-2006"},
 	{"mmddyyyy", "01022006"},
 	{"dd-mm-yyyy", "02-01-2006"},
+	{"mm/dd/yyyy", "01/02/2006"},
 	//TODO add more test for edge cases
 }
 
 func TestDate2Str(t *testing.T) {
 
+	d := &Data{}
 	for _, v := range dateTestCases {
 
-		got, err := DateToStr(v.input, v.inputFormat, v.outputFormat)
+		got, err := DateToStr(d, v.input, v.inputFormat, v.outputFormat)
 
 		if err != nil {
 			t.Errorf("Expected %v, got %v", v.expected, err)

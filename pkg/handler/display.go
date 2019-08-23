@@ -11,6 +11,11 @@ import (
 func (d *Data) Display(val string) {
 	trimmed := strings.TrimSpace(val)
 
+	//display + function
+	//display + variable
+	//display + string
+	//TODO imaplement if the argument is function call the function
+
 	splitted := utils.Split(trimmed)
 	// log.Println(trimmed)
 	if strings.HasPrefix(strings.ToLower(splitted[1]), "upshift") {
@@ -23,6 +28,10 @@ func (d *Data) Display(val string) {
 		fmt.Println(upShifted)
 		return
 
+	} else if strings.HasPrefix(strings.ToLower(splitted[1]), "current_datetime") {
+		currentDateTime := d.CurrentDateTime()
+		fmt.Println(currentDateTime)
+		return
 	} else if strings.HasPrefix(strings.ToLower(splitted[1]), "downshift") {
 		downShifted, err := d.Shift(splitted[1], "", 0)
 		if err != nil {
@@ -30,6 +39,14 @@ func (d *Data) Display(val string) {
 			os.Exit(1)
 		}
 		fmt.Println(downShifted)
+		return
+	} else if strings.HasPrefix(strings.ToLower(splitted[1]), "current_date") {
+		currentDate := d.CurrentDate()
+		fmt.Println(currentDate)
+		return
+	} else if strings.HasPrefix(strings.ToLower(splitted[1]), "current_time") {
+		currentTime := d.CurrentTime()
+		fmt.Println(currentTime)
 		return
 	}
 

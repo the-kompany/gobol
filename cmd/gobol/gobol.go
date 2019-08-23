@@ -112,7 +112,7 @@ func main() {
 
 		if strings.HasPrefix(strings.ToLower(l), "perform") {
 			performstart = true
-			performBlock += l
+			performBlock += " " + l
 			continue
 		}
 
@@ -126,8 +126,7 @@ func main() {
 				continue
 			}
 
-			performBlock += l
-
+			performBlock += " " + l
 			continue
 		}
 
@@ -167,7 +166,8 @@ func main() {
 
 	for _, v := range d.Lines {
 
-		token := strings.SplitAfter(v.Value, " ")
+		trimmed := strings.TrimSpace(v.Value)
+		token := strings.SplitAfter(trimmed, " ")
 
 		tokenTrimmed := strings.ToLower(strings.TrimSpace(token[0]))
 

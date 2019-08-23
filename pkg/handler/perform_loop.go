@@ -34,8 +34,18 @@ func (d *Data) PerformLoopBlock(tokens []string) {
 					d.Display(actionStr)
 
 				case "move":
-					actionStr := trimmed + " " + tokens[i+1] + " " + tokens[i+2] + " " + tokens[i+3]
+					var actionStr string
+					pos := i
+					actionStr += trimmed
+					for strings.ToLower(tokens[pos]) != "to" {
+						pos++
+						actionStr += " " + tokens[pos]
+
+					}
+
+					actionStr += " " + tokens[pos+1]
 					d.Move(actionStr)
+
 				}
 			}
 
@@ -97,7 +107,16 @@ func (d *Data) PerformLoopBlock(tokens []string) {
 					d.Display(actionStr)
 
 				case "move":
-					actionStr := trimmed + " " + tokens[i+1] + " " + tokens[i+2] + " " + tokens[i+3]
+					var actionStr string
+					pos := i
+					actionStr += trimmed
+					for strings.ToLower(tokens[pos]) != "to" {
+						pos++
+						actionStr += " " + tokens[pos]
+
+					}
+
+					actionStr += " " + tokens[pos+1]
 					d.Move(actionStr)
 
 				}

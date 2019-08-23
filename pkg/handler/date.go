@@ -9,13 +9,23 @@ import (
 	"time"
 )
 
-func DateToStr(date, inputFormat, format string) (string, error) {
+func DateToStr(d *Data, date, inputFormat, format string) (string, error) {
 
 	var t time.Time
 	var err error
 	var dateInt int64
 
 	inputFormat = strings.TrimSpace(inputFormat)
+
+	if !strings.HasPrefix(strings.TrimSpace(date), "\"") {
+		if v, ok := d.Vars[date]; !ok {
+			fmt.Println("Error: undefined variable ", date, "at line", d.Line)
+			os.Exit(1)
+		} else {
+			date = v
+		}
+
+	}
 
 	if len(inputFormat) < 1 {
 		err := errors.New("Input format is required")
@@ -28,6 +38,8 @@ func DateToStr(date, inputFormat, format string) (string, error) {
 
 			inputFormat = inputFormat[1 : len(inputFormat)-1]
 		}
+
+		inputFormat = strings.ToLower(inputFormat)
 
 		dateInput, err := getDateLayout(inputFormat)
 
@@ -255,4 +267,32 @@ func getDateLayout(dateStr string) (string, error) {
 
 	return formattedStr, nil
 
+}
+
+func (d *Data) CurrentDate() string {
+
+	t := time.Now()
+
+	formattedStr := t.Format("01-02-2006")
+
+	return formattedStr
+
+}
+
+func (d *Data) CurrentTime() string {
+
+	t := time.Now()
+
+	formattedStr := t.Format("03:04:05pm")
+
+	return formattedStr
+
+}
+
+func (d *Data) CurrentDateTime() string {
+	t := time.Now()
+
+	formattedStr := t.Format("01-02-2006 03:04:05pm")
+
+	return formattedStr
 }
