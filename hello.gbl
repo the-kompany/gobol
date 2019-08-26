@@ -87,5 +87,6 @@ END-PERFORM
 PERFORM VARYING counter FROM 1 by 1 UNTIL counter > 5 
 
 DISPLAY "varying"
+DISPLAY counter
 
 END-PERFORM

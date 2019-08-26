@@ -8,8 +8,8 @@ var testUntilValidData = []struct {
 	rightValue int
 	expected   bool
 }{
-	{"=", 1, 2, true},  //return true  for contuning the loop
-	{"=", 2, 2, false}, //returns false for breaking the loop
+	{"=", 1, 2, false}, //return true  for contuning the loop
+	{"=", 2, 2, true},  //returns false for breaking the loop
 	{">", 2, 1, true},
 	{">", 1, 2, false},
 	{"<", 1, 2, true},
