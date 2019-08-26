@@ -215,7 +215,7 @@ func (d *Data) PerformLoopBlock(tokens []string) {
 
 		// log.Println(counterVar[tokens[2]], rightVar)
 
-		for !untilValid(tokens[9], counterVar[tokens[2]], rightVar) {
+		for untilValid(tokens[9], counterVar[tokens[2]], rightVar) {
 			counterVar[tokens[2]] += incrementValue
 
 			for i := 11; i < len(tokens)-1; i++ {
@@ -233,9 +233,9 @@ func untilValid(operator string, value1, value2 int) bool {
 	switch operator {
 	case "=":
 		if value1 == value2 {
-			return true
+			return false
 		}
-		return false
+		return true
 
 	case ">":
 		if value1 > value2 {
@@ -253,9 +253,9 @@ func untilValid(operator string, value1, value2 int) bool {
 	case "<":
 
 		if value1 < value2 {
-			return false
+			return true
 		}
-		return true
+		return false
 
 	}
 
