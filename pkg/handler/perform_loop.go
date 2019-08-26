@@ -164,37 +164,7 @@ func (d *Data) PerformLoopBlock(tokens []string) {
 			for leftValue != rightValue {
 				for i := 5; i < len(tokens)-1; i++ {
 
-					trimmed := strings.TrimSpace(tokens[i])
-
-					switch strings.ToLower(trimmed) {
-
-					case "display":
-						var actionStr string
-
-						if strings.HasPrefix(strings.TrimSpace(tokens[i+1]), "\"") {
-
-							actionStr = trimmed + " " + tokens[i+1]
-
-						} else {
-							actionStr = trimmed + " " + tokens[i+1]
-
-						}
-
-						d.Display(actionStr)
-
-					case "move":
-						var actionStr string
-						pos := i
-						actionStr += trimmed
-						for strings.ToLower(tokens[pos]) != "to" {
-							pos++
-							actionStr += " " + tokens[pos]
-
-						}
-
-						actionStr += " " + tokens[pos+1]
-						d.Move(actionStr)
-					}
+					d.executeActionBlock(tokens, i)
 				}
 
 				if leftVar {
@@ -208,6 +178,122 @@ func (d *Data) PerformLoopBlock(tokens []string) {
 			}
 
 		}
+	}
+
+	if strings.ToLower(tokens[1]) == "varying" {
+		i, err := strconv.Atoi(tokens[4])
+
+		if err != nil {
+			fmt.Println("Counter variable value must be an integer, given: ", tokens[4])
+		}
+
+		//create the counter variable
+
+		counterVar := make(map[string]int)
+
+		counterVar[tokens[2]] = i
+
+		var rightVar int
+
+		if !isNumeric(tokens[10]) {
+			if v, ok := d.Vars[tokens[10]]; ok {
+				rightVar, _ = strconv.Atoi(v)
+			} else {
+				fmt.Println("Error undefined ", tokens[10])
+				os.Exit(1)
+
+			}
+		} else {
+			rightVar, _ = strconv.Atoi(tokens[10])
+		}
+
+		incrementValue, err := strconv.Atoi(tokens[4])
+
+		if err != nil {
+
+		}
+
+		// log.Println(counterVar[tokens[2]], rightVar)
+
+		for !untilValid(tokens[9], counterVar[tokens[2]], rightVar) {
+			counterVar[tokens[2]] += incrementValue
+
+			for i := 11; i < len(tokens)-1; i++ {
+
+				d.executeActionBlock(tokens, i)
+			}
+		}
+
+	}
+
+}
+
+func untilValid(operator string, value1, value2 int) bool {
+
+	switch operator {
+	case "=":
+		if value1 == value2 {
+			return true
+		}
+		return false
+
+	case ">":
+		if value1 > value2 {
+			return true
+		}
+
+		return false
+
+	case ">=":
+		if value1 >= value2 {
+			return true
+		}
+		return false
+
+	case "<":
+
+		if value1 < value2 {
+			return false
+		}
+		return true
+
+	}
+
+	return false
+}
+
+func (d *Data) executeActionBlock(tokens []string, i int) {
+
+	trimmed := strings.TrimSpace(tokens[i])
+
+	switch strings.ToLower(trimmed) {
+
+	case "display":
+		var actionStr string
+
+		if strings.HasPrefix(strings.TrimSpace(tokens[i+1]), "\"") {
+
+			actionStr = trimmed + " " + tokens[i+1]
+
+		} else {
+			actionStr = trimmed + " " + tokens[i+1]
+
+		}
+
+		d.Display(actionStr)
+
+	case "move":
+		var actionStr string
+		pos := i
+		actionStr += trimmed
+		for strings.ToLower(tokens[pos]) != "to" {
+			pos++
+			actionStr += " " + tokens[pos]
+
+		}
+
+		actionStr += " " + tokens[pos+1]
+		d.Move(actionStr)
 	}
 
 }
