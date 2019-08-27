@@ -95,13 +95,14 @@ func (d *Data) PerformLoopBlock(tokens []string) {
 				case "display":
 					var actionStr string
 
-					if strings.HasPrefix(strings.TrimSpace(tokens[i+1]), "\"") {
+					actionStr += trimmed
 
-						actionStr = trimmed + " " + tokens[i+1]
-
-					} else {
-						actionStr = trimmed + " " + tokens[i+1]
-
+					for _, v := range tokens[i+1:] {
+						if strings.ToLower(v) == "display" || strings.ToLower(v) == "end-perform" || strings.ToLower(v) == "move" {
+							break
+						} else {
+							actionStr += " " + v
+						}
 					}
 
 					d.Display(actionStr)
@@ -274,13 +275,15 @@ func (d *Data) executeActionBlock(tokens []string, i int) {
 	case "display":
 		var actionStr string
 
-		if strings.HasPrefix(strings.TrimSpace(tokens[i+1]), "\"") {
+		actionStr += trimmed
 
-			actionStr = trimmed + " " + tokens[i+1]
+		for _, v := range tokens[i+1:] {
 
-		} else {
-			actionStr = trimmed + " " + tokens[i+1]
-
+			if strings.ToLower(v) == "display" || strings.ToLower(v) == "end-perform" || strings.ToLower(v) == "move" {
+				break
+			} else {
+				actionStr = actionStr + " " + v
+			}
 		}
 
 		d.Display(actionStr)

@@ -16,9 +16,6 @@ DISPLAY DOWNSHIFT("GOBOL")
 MOVE "Gobol" TO VAR4
 MOVE "Gobol" to VAR5
 IF VAR4 = VAR5 THEN
-   DISPLAY "OK"
-   DISPLAY "OK2"
-   DISPLAY "OK3"
    
 END-IF
 
@@ -87,6 +84,6 @@ END-PERFORM
 PERFORM VARYING counter FROM 1 by 3 UNTIL counter > 10 
 
 DISPLAY "varying"
-DISPLAY counter
+DISPLAY "[" counter "]"
 
 END-PERFORM
