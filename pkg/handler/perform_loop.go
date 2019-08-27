@@ -219,12 +219,12 @@ func (d *Data) PerformLoopBlock(tokens []string) {
 
 		for !untilValid(tokens[9], d.Vars[tokens[2]].(int), rightVar) {
 
-			d.Vars[tokens[2]] = d.Vars[tokens[2]].(int) + incrementValue
-
 			for i := 11; i < len(tokens)-1; i++ {
 
 				d.executeActionBlock(tokens, i)
 			}
+			d.Vars[tokens[2]] = d.Vars[tokens[2]].(int) + incrementValue
+
 		}
 
 	}

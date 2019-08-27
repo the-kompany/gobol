@@ -84,7 +84,7 @@ DISPLAY "ok"
 END-PERFORM
 
 
-PERFORM VARYING counter FROM 1 by 1 UNTIL counter > 5 
+PERFORM VARYING counter FROM 1 by 3 UNTIL counter > 10 
 
 DISPLAY "varying"
 DISPLAY counter
