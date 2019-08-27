@@ -124,7 +124,7 @@ func (d *Data) Move(val string) {
 							os.Exit(1)
 						}
 
-						leftValue = d.Vars[trimmedVal]
+						leftValue = d.Vars[trimmedVal].(string)
 					} else {
 						leftValue = trimmedVal
 					}
@@ -149,7 +149,7 @@ func (d *Data) Move(val string) {
 							os.Exit(1)
 						}
 
-						rightValue = d.Vars[trimmedVal]
+						rightValue = d.Vars[trimmedVal].(string)
 					} else {
 						rightValue = trimmedVal
 					}
@@ -195,7 +195,7 @@ func (d *Data) Move(val string) {
 					os.Exit(1)
 				}
 
-				value = d.Vars[trimmedVal]
+				value = d.Vars[trimmedVal].(string)
 			} else {
 				value = trimmedVal
 			}

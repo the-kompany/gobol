@@ -22,7 +22,7 @@ func DateToStr(d *Data, date, inputFormat, format string) (string, error) {
 			fmt.Println("Error: undefined variable ", date, "at line", d.Line)
 			os.Exit(1)
 		} else {
-			date = v
+			date = v.(string)
 		}
 
 	}

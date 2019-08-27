@@ -49,7 +49,7 @@ func main() {
 
 	scanner := bufio.NewScanner(f)
 	d := &handler.Data{}
-	d.Vars = make(map[string]string)
+	d.Vars = make(map[string]interface{})
 
 	var ifBlock string
 	ifStart := false

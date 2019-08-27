@@ -7,7 +7,7 @@ import (
 func TestShift(t *testing.T) {
 
 	d := &Data{}
-	d.Vars = make(map[string]string)
+	d.Vars = make(map[string]interface{})
 
 	v := "UPSHIFT(\"gobol\")"
 	upShifted, err := d.Shift(v, "", 1)

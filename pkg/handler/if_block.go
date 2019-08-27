@@ -33,7 +33,7 @@ func (d *Data) IfBlock(val string) {
 			os.Exit(1)
 		}
 
-		leftValue = d.Vars[strings.TrimSpace(compariosnSl[0])]
+		leftValue = d.Vars[strings.TrimSpace(compariosnSl[0])].(string)
 
 	} else {
 		leftValue = strings.TrimSpace(compariosnSl[0])
@@ -45,7 +45,7 @@ func (d *Data) IfBlock(val string) {
 			os.Exit(1)
 		}
 
-		rightValue = d.Vars[strings.TrimSpace(compariosnSl[1])]
+		rightValue = d.Vars[strings.TrimSpace(compariosnSl[1])].(string)
 
 	} else {
 		rightValue = strings.TrimSpace(compariosnSl[1])

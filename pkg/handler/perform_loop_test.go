@@ -29,3 +29,32 @@ func TestUntilValid(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkPerformLoop(b *testing.B) {
+
+	tokens := []string{
+		"PERFORM",
+		"VARYING",
+		"counter",
+		"FROM",
+		"1",
+		"by",
+		"3",
+		"UNTIL",
+		"counter",
+		">",
+		"5",
+		"DISPLAY",
+		"\"varying\"",
+		"DISPLAY",
+		"counter",
+		"END-PERFORM",
+	}
+
+	d := &Data{}
+	d.Vars = make(map[string]interface{})
+
+	for n := 0; n < b.N; n++ {
+		d.PerformLoopBlock(tokens)
+	}
+}
