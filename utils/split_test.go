@@ -37,4 +37,10 @@ func TestSplit(t *testing.T) {
 		}
 	}
 
+	str = " DISPLAY \"ok\" \"another\" VAR1"
+	Split(str)
+
+	str = "DISPLAY UPSHIFT(\"gobol is great\") TO VAR2 "
+	Split(str)
+
 }
