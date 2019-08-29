@@ -87,6 +87,8 @@ func (d *Data) Move(val string) {
 			log.Println("Err at line ", d.Line, err)
 		}
 
+		log.Println(args)
+
 		var inputFormat string
 		if len(args) == 3 {
 			inputFormat = args[1]
@@ -111,93 +113,114 @@ func (d *Data) Move(val string) {
 		)
 		valueSplitted := splitted[1 : len(splitted)-2]
 
+		//check arithmetic operation with multiple value
 		if len(valueSplitted) > 1 {
 			for k, v := range valueSplitted {
 				trimmedVal := strings.TrimSpace(v)
 
 				if k == 0 {
-					trimmedVal := strings.TrimSpace(valueSplitted[0])
+					if trimmedVal[0] != '"' && !isNumeric(trimmedVal) && trimmedVal[0] != '\'' {
 
-					if trimmedVal[0] != '"' && !isNumeric(trimmedVal) {
+						fmt.Println(trimmedVal[0])
 						if _, ok := d.Vars[trimmedVal]; !ok {
 							fmt.Println("Error: Undefined variable \"", trimmedVal, "\"")
 							os.Exit(1)
 						}
 
-						leftValue = d.Vars[trimmedVal]
+						leftValue = d.Vars[trimmedVal].(string)
 					} else {
-						leftValue = trimmedVal
-					}
-				}
-
-				if k == 1 {
-					if trimmedVal != "+" && trimmedVal != "-" && trimmedVal != "*" && trimmedVal != "/" {
-						fmt.Println("Error: Invalid syntax")
-						os.Exit(1)
-					}
-
-					operator = trimmedVal
-
-				}
-
-				if k == 2 {
-					trimmedVal := strings.TrimSpace(trimmedVal)
-
-					if trimmedVal[0] != '"' && !isNumeric(trimmedVal) {
-						if _, ok := d.Vars[trimmedVal]; !ok {
-							fmt.Println("Error: Undefined variable \"", trimmedVal, "\"")
-							os.Exit(1)
+						if !isNumeric(trimmedVal) {
+							leftValue = trimmedVal[1 : len(trimmedVal)-1]
+						} else {
+							leftValue = trimmedVal
 						}
 
-						rightValue = d.Vars[trimmedVal]
-					} else {
-						rightValue = trimmedVal
+					}
+				}
+
+				if k > 0 {
+					if trimmedVal[0] == '"' || trimmedVal[0] == '\'' {
+						if !isNumeric(trimmedVal) {
+							leftValue += " " + trimmedVal[1:len(trimmedVal)-1]
+						} else {
+							leftValue += trimmedVal
+						}
+					}
+
+					if trimmedVal == "+" || trimmedVal == "-" || trimmedVal == "*" || trimmedVal == "/" {
+
+						operator = trimmedVal
+
+						rightValue = strings.TrimSpace(splitted[k+2])
+
+						log.Println(rightValue)
+						if rightValue[0] != '"' && !isNumeric(rightValue) && rightValue[0] != '\'' {
+							if _, ok := d.Vars[rightValue]; !ok {
+								fmt.Println("Error: Undefined variable \"", trimmedVal, "\"")
+								os.Exit(1)
+							}
+
+							rightValue = d.Vars[rightValue].(string)
+						}
+
 					}
 
 				}
 
 			}
 
-			if !isNumeric(leftValue) && !isNumeric(rightValue) {
-				fmt.Println("Error: invalid syntax for move")
-				os.Exit(1)
+			//if operator is found, do the mathmetical operation
+			if len(operator) > 0 {
+
+				if !isNumeric(leftValue) && !isNumeric(rightValue) {
+					fmt.Println("Error: invalid syntax for move")
+					os.Exit(1)
+				}
+
+				leftValueInt, _ := strconv.Atoi(leftValue)
+				rightValueInt, _ := strconv.Atoi(rightValue)
+
+				var valueInt int
+				switch operator {
+				case "+":
+
+					valueInt = leftValueInt + rightValueInt
+
+				case "-":
+					valueInt = leftValueInt - rightValueInt
+
+				case "*":
+					valueInt = leftValueInt * rightValueInt
+
+				case "/":
+					valueInt = leftValueInt / rightValueInt
+
+				}
+
+				value = strconv.Itoa(valueInt)
+			} else {
+				value = leftValue
 			}
-
-			leftValueInt, _ := strconv.Atoi(leftValue)
-			rightValueInt, _ := strconv.Atoi(rightValue)
-
-			var valueInt int
-			switch operator {
-			case "+":
-
-				valueInt = leftValueInt + rightValueInt
-
-			case "-":
-				valueInt = leftValueInt - rightValueInt
-
-			case "*":
-				valueInt = leftValueInt * rightValueInt
-
-			case "/":
-				valueInt = leftValueInt / rightValueInt
-
-			}
-
-			value = strconv.Itoa(valueInt)
 
 		} else {
 
 			trimmedVal := strings.TrimSpace(valueSplitted[0])
 
-			if trimmedVal[0] != '"' && !isNumeric(trimmedVal) {
+			if trimmedVal[0] != '"' && !isNumeric(trimmedVal) && trimmedVal[0] != '\'' {
 				if _, ok := d.Vars[trimmedVal]; !ok {
 					fmt.Println("Error: Undefined variable \"", trimmedVal, "\"")
 					os.Exit(1)
 				}
 
-				value = d.Vars[trimmedVal]
+				value = d.Vars[trimmedVal].(string)
 			} else {
-				value = trimmedVal
+				if isNumeric(trimmedVal) {
+					value = trimmedVal
+				} else if strings.HasPrefix(trimmedVal, "\"") || strings.HasPrefix(trimmedVal, "'") {
+
+					value = trimmedVal[1 : len(trimmedVal)-1]
+
+				}
 			}
 
 		}

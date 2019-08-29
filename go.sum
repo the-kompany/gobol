@@ -1,0 +1,4 @@
+github.com/gen2brain/beeep v0.0.0-20190719094215-ece0cb67ca77 h1:bvjWrvlA7ddo8+E8X5D+m5jg0GkwTeG6eRJGb6f/rRE=
+github.com/gen2brain/beeep v0.0.0-20190719094215-ece0cb67ca77/go.mod h1:GprdPCZglWh5OMcIDpeKBxuUJI+fEDOTVUfxZeda4zo=
+github.com/godbus/dbus v4.1.0+incompatible h1:WqqLRTsQic3apZUK9qC5sGNfXthmPXzUZ7nQPrNITa4=
+github.com/godbus/dbus v4.1.0+incompatible/go.mod h1:/YcGZj5zSblfDWMMoOzV4fas9FZnQYTkDnsGvmh2Grw=

@@ -76,7 +76,7 @@ func (d *Data) Shift(val, first string, shiftType int) (string, error) {
 			return "", err
 		}
 
-		variableValue := strings.Title(d.Vars[arg0Trimmed])
+		variableValue := strings.Title(d.Vars[arg0Trimmed].(string))
 		// d.Vars[to] = variableValue
 		return variableValue, nil
 
@@ -107,12 +107,12 @@ func (d *Data) Shift(val, first string, shiftType int) (string, error) {
 	}
 
 	if shiftType == 1 {
-		variableValue := strings.ToUpper(d.Vars[arg0Trimmed])
+		variableValue := strings.ToUpper(d.Vars[arg0Trimmed].(string))
 		// d.Vars[to] = variableValue
 		return variableValue, nil
 
 	}
-	variableValue := strings.ToLower(d.Vars[arg0Trimmed])
+	variableValue := strings.ToLower(d.Vars[arg0Trimmed].(string))
 	return variableValue, nil
 
 }

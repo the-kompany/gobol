@@ -1,7 +1,7 @@
 package handler
 
 type Data struct {
-	Vars   map[string]string
+	Vars   map[string]interface{}
 	Line   int
 	Lines  []Token
 	Record map[string]map[string]string

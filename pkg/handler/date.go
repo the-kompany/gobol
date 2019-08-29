@@ -22,7 +22,7 @@ func DateToStr(d *Data, date, inputFormat, format string) (string, error) {
 			fmt.Println("Error: undefined variable ", date, "at line", d.Line)
 			os.Exit(1)
 		} else {
-			date = v
+			date = v.(string)
 		}
 
 	}
@@ -48,7 +48,9 @@ func DateToStr(d *Data, date, inputFormat, format string) (string, error) {
 			return "", err
 		}
 
-		date = date[1 : len(date)-1]
+		if strings.HasPrefix(date, "\"") {
+			date = date[1 : len(date)-1]
+		}
 
 		t, err = time.Parse(dateInput, date)
 

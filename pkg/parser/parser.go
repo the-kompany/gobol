@@ -10,6 +10,12 @@ var (
 	KeyWords = []string{}
 )
 
+type parser struct {
+}
+
+type Tree struct {
+}
+
 func ValidIfBlock(val string) bool {
 
 	if !strings.HasSuffix(strings.ToLower(val), "end-if") {

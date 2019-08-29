@@ -95,13 +95,14 @@ func (d *Data) PerformLoopBlock(tokens []string) {
 				case "display":
 					var actionStr string
 
-					if strings.HasPrefix(strings.TrimSpace(tokens[i+1]), "\"") {
+					actionStr += trimmed
 
-						actionStr = trimmed + " " + tokens[i+1]
-
-					} else {
-						actionStr = trimmed + " " + tokens[i+1]
-
+					for _, v := range tokens[i+1:] {
+						if strings.ToLower(v) == "display" || strings.ToLower(v) == "end-perform" || strings.ToLower(v) == "move" {
+							break
+						} else {
+							actionStr += " " + v
+						}
 					}
 
 					d.Display(actionStr)
@@ -141,7 +142,7 @@ func (d *Data) PerformLoopBlock(tokens []string) {
 					os.Exit(1)
 				}
 
-				leftValue = d.Vars[trimmedVal]
+				leftValue = d.Vars[trimmedVal].(string)
 				leftVar = true
 			} else {
 				leftValue = trimmedVal
@@ -155,7 +156,7 @@ func (d *Data) PerformLoopBlock(tokens []string) {
 					os.Exit(1)
 				}
 
-				rightValue = d.Vars[trimmedVal]
+				rightValue = d.Vars[trimmedVal].(string)
 				rightVar = true
 			} else {
 				rightValue = trimmedVal
@@ -164,50 +165,141 @@ func (d *Data) PerformLoopBlock(tokens []string) {
 			for leftValue != rightValue {
 				for i := 5; i < len(tokens)-1; i++ {
 
-					trimmed := strings.TrimSpace(tokens[i])
-
-					switch strings.ToLower(trimmed) {
-
-					case "display":
-						var actionStr string
-
-						if strings.HasPrefix(strings.TrimSpace(tokens[i+1]), "\"") {
-
-							actionStr = trimmed + " " + tokens[i+1]
-
-						} else {
-							actionStr = trimmed + " " + tokens[i+1]
-
-						}
-
-						d.Display(actionStr)
-
-					case "move":
-						var actionStr string
-						pos := i
-						actionStr += trimmed
-						for strings.ToLower(tokens[pos]) != "to" {
-							pos++
-							actionStr += " " + tokens[pos]
-
-						}
-
-						actionStr += " " + tokens[pos+1]
-						d.Move(actionStr)
-					}
+					d.executeActionBlock(tokens, i)
 				}
 
 				if leftVar {
 
-					leftValue = d.Vars[strings.TrimSpace(tokens[2])]
+					leftValue = d.Vars[strings.TrimSpace(tokens[2])].(string)
 				}
 
 				if rightVar {
-					leftValue = d.Vars[strings.TrimSpace(tokens[4])]
+					leftValue = d.Vars[strings.TrimSpace(tokens[4])].(string)
 				}
 			}
 
 		}
+	}
+
+	if strings.ToLower(tokens[1]) == "varying" {
+		i, err := strconv.Atoi(tokens[4])
+
+		if err != nil {
+			fmt.Println("Counter variable value must be an integer, given: ", tokens[4])
+			os.Exit(1)
+		}
+
+		//create the counter variable
+
+		// counterVar := make(map[string]int)
+
+		// counterVar[tokens[2]] = i
+
+		d.Vars[tokens[2]] = i
+
+		var rightVar int
+
+		if !isNumeric(tokens[10]) {
+			if v, ok := d.Vars[tokens[10]]; ok {
+				rightVar, _ = v.(int)
+			} else {
+				fmt.Println("Error undefined ", tokens[10])
+				os.Exit(1)
+
+			}
+		} else {
+			rightVar, _ = strconv.Atoi(tokens[10])
+		}
+
+		incrementValue, err := strconv.Atoi(tokens[6])
+
+		if err != nil {
+			fmt.Println("Error: Increment value must be an integer")
+			os.Exit(1)
+		}
+
+		for !untilValid(tokens[9], d.Vars[tokens[2]].(int), rightVar) {
+
+			for i := 11; i < len(tokens)-1; i++ {
+
+				d.executeActionBlock(tokens, i)
+			}
+			d.Vars[tokens[2]] = d.Vars[tokens[2]].(int) + incrementValue
+
+		}
+
+	}
+
+}
+
+func untilValid(operator string, value1, value2 int) bool {
+
+	switch operator {
+	case "=":
+		if value1 == value2 {
+			return true
+		}
+		return false
+
+	case ">":
+		if value1 > value2 {
+			return true
+		}
+
+		return false
+
+	case ">=":
+		if value1 >= value2 {
+			return true
+		}
+		return false
+
+	case "<":
+
+		if value1 < value2 {
+			return true
+		}
+		return false
+
+	}
+
+	return false
+}
+
+func (d *Data) executeActionBlock(tokens []string, i int) {
+
+	trimmed := strings.TrimSpace(tokens[i])
+
+	switch strings.ToLower(trimmed) {
+
+	case "display":
+		var actionStr string
+
+		actionStr += trimmed
+
+		for _, v := range tokens[i+1:] {
+
+			if strings.ToLower(v) == "display" || strings.ToLower(v) == "end-perform" || strings.ToLower(v) == "move" {
+				break
+			} else {
+				actionStr = actionStr + " " + v
+			}
+		}
+
+		d.Display(actionStr)
+
+	case "move":
+		var actionStr string
+		pos := i
+		actionStr += trimmed
+		for strings.ToLower(tokens[pos]) != "to" {
+			pos++
+			actionStr += " " + tokens[pos]
+
+		}
+
+		actionStr += " " + tokens[pos+1]
+		d.Move(actionStr)
 	}
 
 }

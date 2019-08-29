@@ -5,7 +5,7 @@ import "testing"
 func TestMove(t *testing.T) {
 
 	d := &Data{}
-	d.Vars = make(map[string]string)
+	d.Vars = make(map[string]interface{})
 	d.Vars["VAR2"] = "test data"
 	d.Vars["VAR1"] = "value1"
 	str := "MOVE UPSHIFT(VAR2) TO VAR1"
