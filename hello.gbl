@@ -87,3 +87,5 @@ DISPLAY "varying"
 DISPLAY "[" counter "]"
 
 END-PERFORM
+
+DISPLAY 'Hello' ' world'

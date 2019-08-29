@@ -99,6 +99,7 @@ func Split(val string) []string {
 	var identifier string
 	var isAlphabet bool
 	var parenthesisStart bool
+	var singleQuoteStart bool
 
 	strTokens := []string{}
 
@@ -129,10 +130,29 @@ func Split(val string) []string {
 			continue
 		}
 
+		if singleQuoteStart {
+
+			if v == '\'' {
+				str = val[startPos : k+1]
+				singleQuoteStart = false
+				startPos = k + 1
+				strTokens = append(strTokens, str)
+				continue
+			}
+
+			continue
+		}
+
 		if v == '"' {
 
 			startPos = k
 			isStrStart = true
+			continue
+		}
+
+		if v == '\'' {
+			startPos = k
+			singleQuoteStart = true
 			continue
 		}
 

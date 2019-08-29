@@ -56,6 +56,11 @@ func (d *Data) Display(val string) {
 			trimmedQuote := v[1 : len(v)-1]
 			str += trimmedQuote
 
+		} else if strings.HasPrefix(v, "'") {
+
+			trimmedQuote := v[1 : len(v)-1]
+			str += trimmedQuote
+
 		} else if strings.Contains(v, ".") {
 
 			splittedRecordName := strings.Split(v, ".")
