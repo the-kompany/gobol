@@ -101,7 +101,12 @@ func (d *Data) Move(val string) {
 			os.Exit(1)
 		}
 
-		d.Vars[splitted[3]] = dateStr
+		if strings.Contains(splitted[3], ".") {
+			recordSplitted := strings.Split(splitted[3], ".")
+			d.Record[recordSplitted[0]][recordSplitted[1]] = dateStr
+		} else {
+			d.Vars[splitted[3]] = dateStr
+		}
 
 	default:
 
@@ -207,12 +212,26 @@ func (d *Data) Move(val string) {
 			trimmedVal := strings.TrimSpace(valueSplitted[0])
 
 			if trimmedVal[0] != '"' && !isNumeric(trimmedVal) && trimmedVal[0] != '\'' {
-				if _, ok := d.Vars[trimmedVal]; !ok {
-					fmt.Println("Error: Undefined variable \"", trimmedVal, "\"")
-					os.Exit(1)
+
+				if strings.Contains(trimmedVal, ".") {
+					recordSplitted := strings.Split(trimmedVal, ".")
+
+					if _, ok := d.Record[recordSplitted[0]][recordSplitted[1]]; !ok {
+						fmt.Println("Error: Undefined record \"", trimmedVal, "\"")
+						os.Exit(1)
+					}
+
+					value = d.Record[splitted[0]][splitted[1]]
+				} else {
+
+					if _, ok := d.Vars[trimmedVal]; !ok {
+						fmt.Println("Error: Undefined variable \"", trimmedVal, "\"")
+						os.Exit(1)
+					}
+
+					value = d.Vars[trimmedVal].(string)
 				}
 
-				value = d.Vars[trimmedVal].(string)
 			} else {
 				if isNumeric(trimmedVal) {
 					value = trimmedVal
@@ -225,7 +244,13 @@ func (d *Data) Move(val string) {
 
 		}
 
-		d.Vars[splitted[len(splitted)-1]] = value
+		varName := splitted[len(splitted)-1]
+		if strings.Contains(varName, ".") {
+			recordSplitted := strings.Split(varName, ".")
+			d.Record[recordSplitted[0]][recordSplitted[1]] = value
+		} else {
+			d.Vars[splitted[len(splitted)-1]] = value
+		}
 	}
 
 }

@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/csv"
 	"errors"
 	"fmt"
 	"os"
@@ -33,33 +32,20 @@ func (d *Data) Open(val string) {
 		os.Exit(1)
 	}
 
-	lines, err := ReadFile(arg)
+	f, err := os.Open(strings.TrimSpace(arg))
 
 	if err != nil {
-		fmt.Printf("Error at line %v", err.Error())
+		err = errors.New("Error reading file, " + err.Error())
+
+		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	d.File = make(map[string][][]string)
+	d.FileData = make(map[string]*os.File)
+	d.FileData[referenceID] = f
 
-	d.File[referenceID] = lines
-
-	// log.Println("file data", d.File[referenceID])
 }
 
-func ReadFile(filePath string) ([][]string, error) {
-
-	fmt.Println(strings.TrimSpace(filePath))
-
-	f, err := os.Open(strings.TrimSpace(filePath))
-
-	if err != nil {
-		return nil, errors.New("Error reading file, " + err.Error())
-	}
-
-	defer f.Close()
-	lines, err := csv.NewReader(f).ReadAll()
-
-	return lines, nil
+func (d *Data) ReadCSV() {
 
 }

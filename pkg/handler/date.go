@@ -18,11 +18,23 @@ func DateToStr(d *Data, date, inputFormat, format string) (string, error) {
 	inputFormat = strings.TrimSpace(inputFormat)
 
 	if !strings.HasPrefix(strings.TrimSpace(date), "\"") {
-		if v, ok := d.Vars[date]; !ok {
-			fmt.Println("Error: undefined variable ", date, "at line", d.Line)
-			os.Exit(1)
+
+		if strings.Contains(date, ".") {
+			recordSplitted := strings.Split(date, ".")
+
+			if v, ok := d.Record[recordSplitted[0]][recordSplitted[1]]; !ok {
+				fmt.Println("Error: undefined variable ", date, "at line", d.Line)
+				os.Exit(1)
+			} else {
+				date = v
+			}
 		} else {
-			date = v.(string)
+			if v, ok := d.Vars[date]; !ok {
+				fmt.Println("Error: undefined variable ", date, "at line", d.Line)
+				os.Exit(1)
+			} else {
+				date = v.(string)
+			}
 		}
 
 	}

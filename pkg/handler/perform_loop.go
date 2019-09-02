@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"encoding/csv"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
 	"strings"
@@ -62,28 +64,52 @@ func (d *Data) PerformLoopBlock(tokens []string) {
 		// log.Println("file ref ", d.File[fileReference][1][0])
 		// log.Println("record name", recordName)
 		// log.Println("data ", d.Record[recordName]["Title545"])
+		r := csv.NewReader(d.FileData[fileReference])
 
-		for i := 0; i < len(d.File[fileReference]); i++ {
+		//read the CSV header
+		header, err := r.Read()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		for {
 			// log.Println("debug", d.File[fileReference])
 
 			// fr := d.File[fileReference][0][0]
 
 			//first line is title in csv
 			//start the iteration from 1
-			if i > 0 {
 
-				for k, v := range d.File[fileReference][i] {
+			// for k, v := range d.File[fileReference][i] {
 
-					frTitle := d.File[fileReference][0][k]
+			// 	frTitle := d.File[fileReference][0][k]
 
-					if _, ok := d.Record[recordName][frTitle]; !ok {
+			// 	if _, ok := d.Record[recordName][frTitle]; !ok {
 
-						fmt.Println("file reference does not match with the record definition", frTitle)
-						os.Exit(1)
-					}
+			// 		fmt.Println("file reference does not match with the record definition", frTitle)
+			// 		os.Exit(1)
+			// 	}
 
-					d.Record[recordName][frTitle] = v
+			// 	d.Record[recordName][frTitle] = v
+			// }
+
+			rec, err := r.Read()
+			if err != nil {
+				if err == io.EOF {
+					break
 				}
+				fmt.Println("Error reading file", err.Error())
+				os.Exit(1)
+			}
+
+			for k, v := range header {
+				if _, ok := d.Record[recordName][v]; !ok {
+
+					fmt.Println("file reference does not match with the record definition", v)
+					os.Exit(1)
+				}
+				d.Record[recordName][v] = rec[k]
 			}
 
 			for i := 3; i < len(tokens)-1; i++ {
