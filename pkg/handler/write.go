@@ -2,14 +2,11 @@ package handler
 
 import (
 	"encoding/csv"
-	"fmt"
 	"log"
 	"os"
 )
 
 func (d *Data) Write(tokens []string, csvWriter *csv.Writer, writeCount int) {
-
-	fmt.Println(tokens)
 
 	writer := csvWriter
 
@@ -18,8 +15,7 @@ func (d *Data) Write(tokens []string, csvWriter *csv.Writer, writeCount int) {
 
 	rows := []string{}
 	headers := []string{}
-	//k = header, v = value
-	log.Println(recordData)
+
 	for k, v := range recordData {
 
 		//write the csv header
@@ -40,8 +36,6 @@ func (d *Data) Write(tokens []string, csvWriter *csv.Writer, writeCount int) {
 			os.Exit(1)
 		}
 	}
-
-	fmt.Println("rows ", rows)
 
 	err := writer.Write(rows)
 

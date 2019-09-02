@@ -1,4 +1,4 @@
-OPEN("test.csv") AS data
+OPEN("test.csv") AS file_handle
 
 RECORD MYTHING
    DATE
@@ -6,11 +6,14 @@ RECORD MYTHING
    Title3 
 END-RECORD
 
-PERFORM READ data INTO MYTHING
-  DISPLAY "ok"
+PERFORM READ file_handle INTO MYTHING AS CSV
+ 
+  DISPLAY MYTHING.DATE
   MOVE FMTDATE(MYTHING.DATE, "mm-dd-yyyy", "mm/dd/yy") TO MYTHING.DATE
   WRITE MYTHING TO "output.csv" as CSV  
 
 END-PERFORM 
+
+CLOSE file_handle
 
 

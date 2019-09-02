@@ -209,6 +209,16 @@ func main() {
 			d.Open(v.Value)
 		case "record":
 			d.ExecuteRecord(v.Value)
+		case "close":
+			splitted := strings.Split(v.Value, " ")
+
+			if len(splitted) < 2 {
+				fmt.Println("Invalid syntax for CLOSE")
+				os.Exit(1)
+			}
+			fileHandleName := strings.TrimSpace(splitted[1])
+			d.Close(fileHandleName)
+
 		default:
 			fmt.Printf("Error: Undefined %v at line %v \n", firstToken, v.Line)
 		}
