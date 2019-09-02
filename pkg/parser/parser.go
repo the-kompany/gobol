@@ -2,6 +2,7 @@ package parser
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -46,6 +47,7 @@ func ValidateFunctionCall(val string) {
 func ValidPerformBlock(val string) ([]string, error) {
 
 	trimmed := strings.TrimSpace(val)
+
 	splitted := strings.Split(trimmed, " ")
 
 	if splitted[2] == strings.ToLower("times") {
@@ -70,6 +72,13 @@ func ValidPerformBlock(val string) ([]string, error) {
 			str := strings.TrimSpace(v)
 			sl = append(sl, str)
 		}
+	}
+
+	for _, v := range sl {
+		if strings.HasSuffix(v, "\n") {
+			fmt.Println("new")
+		}
+		// fmt.Println(len(v))
 	}
 
 	return sl, nil

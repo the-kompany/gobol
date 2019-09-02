@@ -85,9 +85,8 @@ func (d *Data) Move(val string) {
 
 		if err != nil {
 			log.Println("Err at line ", d.Line, err)
+			os.Exit(1)
 		}
-
-		log.Println(args)
 
 		var inputFormat string
 		if len(args) == 3 {
@@ -158,7 +157,6 @@ func (d *Data) Move(val string) {
 
 						rightValue = strings.TrimSpace(splitted[k+2])
 
-						log.Println(rightValue)
 						if rightValue[0] != '"' && !isNumeric(rightValue) && rightValue[0] != '\'' {
 							if _, ok := d.Vars[rightValue]; !ok {
 								fmt.Println("Error: Undefined variable \"", trimmedVal, "\"")

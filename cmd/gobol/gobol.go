@@ -112,7 +112,7 @@ func main() {
 
 		if strings.HasPrefix(strings.ToLower(l), "perform") {
 			performstart = true
-			performBlock += " " + l
+			performBlock += " " + l + "\n"
 			continue
 		}
 
@@ -126,7 +126,7 @@ func main() {
 				continue
 			}
 
-			performBlock += " " + l
+			performBlock += " " + l + "\n"
 			continue
 		}
 

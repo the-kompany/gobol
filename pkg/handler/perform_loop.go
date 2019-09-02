@@ -9,6 +9,10 @@ import (
 	"strings"
 )
 
+var writeCount int
+var outFile *os.File
+var csvWriter *csv.Writer
+
 func (d *Data) PerformLoopBlock(tokens []string) {
 
 	if strings.ToLower(tokens[2]) == "times" {
@@ -74,25 +78,6 @@ func (d *Data) PerformLoopBlock(tokens []string) {
 		}
 
 		for {
-			// log.Println("debug", d.File[fileReference])
-
-			// fr := d.File[fileReference][0][0]
-
-			//first line is title in csv
-			//start the iteration from 1
-
-			// for k, v := range d.File[fileReference][i] {
-
-			// 	frTitle := d.File[fileReference][0][k]
-
-			// 	if _, ok := d.Record[recordName][frTitle]; !ok {
-
-			// 		fmt.Println("file reference does not match with the record definition", frTitle)
-			// 		os.Exit(1)
-			// 	}
-
-			// 	d.Record[recordName][frTitle] = v
-			// }
 
 			rec, err := r.Read()
 			if err != nil {
@@ -124,7 +109,8 @@ func (d *Data) PerformLoopBlock(tokens []string) {
 					actionStr += trimmed
 
 					for _, v := range tokens[i+1:] {
-						if strings.ToLower(v) == "display" || strings.ToLower(v) == "end-perform" || strings.ToLower(v) == "move" {
+						//TODO this needed to be fixed, should be handled by newline \n
+						if strings.ToLower(v) == "display" || strings.ToLower(v) == "end-perform" || strings.ToLower(v) == "move" || strings.ToLower(v) == "write" {
 							break
 						} else {
 							actionStr += " " + v
@@ -145,6 +131,30 @@ func (d *Data) PerformLoopBlock(tokens []string) {
 
 					actionStr += " " + tokens[pos+1]
 					d.Move(actionStr)
+				case "write":
+
+					//
+					//check if file name has double quote, trime it
+
+					writeTokens := tokens[i : i+6]
+					fileName := writeTokens[3]
+
+					if strings.HasPrefix(fileName, "\"") {
+						fileName = fileName[1 : len(fileName)-1]
+					}
+
+					f, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+
+					if err != nil {
+						fmt.Println(err)
+						os.Exit(1)
+					}
+
+					csvWriter = csv.NewWriter(f)
+					writeCount++
+
+					d.Write(writeTokens, csvWriter, writeCount)
+					csvWriter.Flush()
 
 				}
 			}
