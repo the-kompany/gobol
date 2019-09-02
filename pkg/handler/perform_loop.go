@@ -143,17 +143,30 @@ func (d *Data) PerformLoopBlock(tokens []string) {
 						fileName = fileName[1 : len(fileName)-1]
 					}
 
-					f, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+					if writeCount < 1 {
 
-					if err != nil {
-						fmt.Println(err)
-						os.Exit(1)
+						outFile, err = os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+
+						if err != nil {
+							fmt.Println(err)
+							os.Exit(1)
+						}
+						csvWriter = csv.NewWriter(outFile)
+
 					}
 
-					csvWriter = csv.NewWriter(f)
+					info, _ := outFile.Stat()
+					fileSize := info.Size()
+
 					writeCount++
 
-					d.Write(writeTokens, csvWriter, writeCount)
+					if fileSize < 1 {
+
+						d.Write(writeTokens, csvWriter, 1)
+					} else {
+
+						d.Write(writeTokens, csvWriter, 2)
+					}
 					csvWriter.Flush()
 
 				}
