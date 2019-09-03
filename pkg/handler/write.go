@@ -12,7 +12,6 @@ func (d *Data) csvWrite(tokens []string, csvWriter *csv.Writer, writeCount int) 
 
 	writer := csvWriter
 
-	log.Println("debug")
 	//find the record
 	recordData := d.Record[tokens[1]]
 

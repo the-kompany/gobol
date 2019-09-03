@@ -8,9 +8,17 @@ END-RECORD
 
 PERFORM READ file_handle INTO MYTHING AS CSV
  
-  DISPLAY MYTHING.DATE
+  DISPLAY "hello"
+
+  IF MYTHING.Title2 = "two" THEN 
+
   MOVE FMTDATE(MYTHING.DATE, "mm-dd-yyyy", "mm/dd/yy") TO MYTHING.DATE
-  WRITE MYTHING TO "output.csv" as JSON
+
+  END-IF
+
+
+  WRITE MYTHING TO "output.csv" as CSV 
+
 
 END-PERFORM 
 

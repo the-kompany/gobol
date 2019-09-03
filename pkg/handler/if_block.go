@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strings"
 )
@@ -27,13 +28,27 @@ func (d *Data) IfBlock(val string) {
 	var leftValue string
 	var rightValue string
 
+	//check if it has quote
 	if !strings.HasPrefix(strings.TrimSpace(compariosnSl[0]), "\"") {
-		if _, ok := d.Vars[strings.TrimSpace(compariosnSl[0])]; !ok {
+
+		//check if it's a valid record
+		if strings.Contains(compariosnSl[0], ".") {
+
+			recordSplitted := strings.Split(compariosnSl[0], ".")
+
+			recordName := strings.TrimSpace(recordSplitted[0])
+			recordField := strings.TrimSpace(recordSplitted[1])
+
+			leftValue = d.Record[recordName][recordField]
+
+			//if it's not a record check if it's valid variable
+		} else if _, ok := d.Vars[strings.TrimSpace(compariosnSl[0])]; !ok {
 			fmt.Println("Error: undefined ", compariosnSl[0])
 			os.Exit(1)
-		}
 
-		leftValue = d.Vars[strings.TrimSpace(compariosnSl[0])].(string)
+		} else {
+			leftValue = d.Vars[strings.TrimSpace(compariosnSl[0])].(string)
+		}
 
 	} else {
 		leftValue = strings.TrimSpace(compariosnSl[0])
@@ -51,6 +66,14 @@ func (d *Data) IfBlock(val string) {
 		rightValue = strings.TrimSpace(compariosnSl[1])
 	}
 
+	if strings.HasPrefix(leftValue, "\"") {
+		leftValue = leftValue[1 : len(leftValue)-1]
+	}
+
+	if strings.HasPrefix(rightValue, "\"") {
+		rightValue = rightValue[1 : len(rightValue)-1]
+	}
+
 	if leftValue == rightValue {
 		// d.Display("DISPLAY \"OK\"")
 
@@ -62,6 +85,7 @@ func (d *Data) IfBlock(val string) {
 		//like this: execute("DISPLAY VAR1")
 
 		if strings.Contains(thenActionTrimmed, "DISPLAY") {
+			log.Println(thenActionTrimmed)
 			d.Display(thenActionTrimmed)
 		}
 

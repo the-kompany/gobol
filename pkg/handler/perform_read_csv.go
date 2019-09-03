@@ -4,7 +4,6 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"strings"
 )
@@ -53,7 +52,7 @@ func (d *Data) performReadCSV(tokens []string, fileReference, recordName string)
 
 				for _, v := range tokens[i+1:] {
 					//TODO this needed to be fixed, should be handled by newline \n
-					if strings.ToLower(v) == "display" || strings.ToLower(v) == "end-perform" || strings.ToLower(v) == "move" || strings.ToLower(v) == "write" {
+					if strings.ToLower(v) == "display" || strings.ToLower(v) == "end-perform" || strings.ToLower(v) == "move" || strings.ToLower(v) == "write" || strings.ToLower(v) == "if" {
 						break
 					} else {
 						actionStr += " " + v
@@ -74,6 +73,20 @@ func (d *Data) performReadCSV(tokens []string, fileReference, recordName string)
 
 				actionStr += " " + tokens[pos+1]
 				d.Move(actionStr)
+			case "if":
+				var actionStr string
+				pos := i
+				actionStr += trimmed
+				for strings.ToLower(tokens[pos]) != "end-if" {
+					pos++
+					actionStr += " " + tokens[pos]
+
+				}
+
+				i = pos
+
+				d.IfBlock(actionStr)
+
 			case "write":
 
 				//
@@ -87,7 +100,6 @@ func (d *Data) performReadCSV(tokens []string, fileReference, recordName string)
 				}
 
 				if strings.ToLower(tokens[i+5]) == "csv" {
-					log.Println("ok")
 
 					if writeCount < 1 {
 
