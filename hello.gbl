@@ -10,7 +10,7 @@ PERFORM READ file_handle INTO MYTHING AS CSV
  
   DISPLAY MYTHING.DATE
   MOVE FMTDATE(MYTHING.DATE, "mm-dd-yyyy", "mm/dd/yy") TO MYTHING.DATE
-  WRITE MYTHING TO "output.csv" as CSV  
+  WRITE MYTHING TO "output.json" as JSON
 
 END-PERFORM 
 
