@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"strings"
 )
@@ -85,7 +86,8 @@ func (d *Data) performReadCSV(tokens []string, fileReference, recordName string)
 					fileName = fileName[1 : len(fileName)-1]
 				}
 
-				if strings.ToLower(tokens[i+6]) == "csv" {
+				if strings.ToLower(tokens[i+5]) == "csv" {
+					log.Println("ok")
 
 					if writeCount < 1 {
 
@@ -125,8 +127,21 @@ func (d *Data) performReadCSV(tokens []string, fileReference, recordName string)
 
 					outFile.Close()
 
-				}
+				} else if strings.ToLower(tokens[i+5]) == "fixed" {
 
+					if outFile == nil {
+
+						outFile, err = os.OpenFile("output.json", os.O_RDWR|os.O_CREATE, 0644)
+
+						if err != nil {
+							fmt.Println(err)
+							os.Exit(1)
+						}
+					}
+
+					d.csvToFixedWrite(writeTokens, writeCount, outFile)
+
+				}
 				writeCount++
 
 			}

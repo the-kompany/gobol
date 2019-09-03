@@ -12,6 +12,7 @@ func (d *Data) csvWrite(tokens []string, csvWriter *csv.Writer, writeCount int) 
 
 	writer := csvWriter
 
+	log.Println("debug")
 	//find the record
 	recordData := d.Record[tokens[1]]
 
@@ -97,6 +98,31 @@ func (d *Data) csvToJasonWrite(tokens []string, writeCount int, file *os.File) {
 
 }
 
-func (d *Data) csvToFixedWrite(tokens []string, writeCount int) {
+func (d *Data) csvToFixedWrite(tokens []string, writeCount int, file *os.File) {
+
+	recordData := d.Record[tokens[1]]
+
+	for k, v := range recordData {
+
+		//write the csv header
+		if writeCount == 1 {
+
+			_, err := file.WriteAt([]byte(k), 0)
+
+			if err != nil {
+				log.Println(err)
+				os.Exit(1)
+			}
+
+		}
+
+		_, err := file.Write([]byte(v))
+
+		if err != nil {
+			log.Println(err)
+			os.Exit(1)
+		}
+
+	}
 
 }
