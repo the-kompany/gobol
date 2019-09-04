@@ -11,16 +11,41 @@ import (
 func (d *Data) IfBlock(val string) {
 
 	trimmed := strings.TrimSpace(val)
-	thenSplit := strings.Split(trimmed, "THEN")
+
+	var thenSplit []string
+
+	if strings.Contains(trimmed, "THEN") {
+		thenSplit = strings.Split(trimmed, "THEN")
+
+	} else if strings.Contains(trimmed, "then") {
+		thenSplit = strings.Split(trimmed, "then")
+	}
 
 	//remove the if from string
 	comparisonStr := thenSplit[0][2:]
 	comparisonStr = strings.TrimSpace(comparisonStr)
 
 	compariosnSl := []string{}
+	splt := []string{}
 	//split it by equal sign if has = sign
 	if strings.Contains(comparisonStr, "=") {
-		compariosnSl = strings.Split(comparisonStr, "=")
+		splt = strings.Split(comparisonStr, "=")
+	}
+
+	compariosnSl = append(compariosnSl, splt[0])
+
+	splitRight := strings.Split(splt[1], " ")
+
+	for _, v := range splitRight {
+
+		if len(strings.TrimSpace(v)) < 1 {
+			continue
+		} else {
+
+			compariosnSl = append(compariosnSl, strings.TrimSpace(v))
+			break
+		}
+
 	}
 
 	//if comparison is true then execute the 'then' action
@@ -55,8 +80,10 @@ func (d *Data) IfBlock(val string) {
 	}
 
 	if !strings.HasPrefix(strings.TrimSpace(compariosnSl[1]), "\"") {
+
+		log.Println(compariosnSl[1])
 		if _, ok := d.Vars[strings.TrimSpace(compariosnSl[1])]; !ok {
-			fmt.Println("Error: undefined ", compariosnSl[1])
+			fmt.Println("Error:  undefined ", compariosnSl[1])
 			os.Exit(1)
 		}
 
@@ -66,6 +93,7 @@ func (d *Data) IfBlock(val string) {
 		rightValue = strings.TrimSpace(compariosnSl[1])
 	}
 
+	//trime the double quote
 	if strings.HasPrefix(leftValue, "\"") {
 		leftValue = leftValue[1 : len(leftValue)-1]
 	}
@@ -76,7 +104,6 @@ func (d *Data) IfBlock(val string) {
 
 	if leftValue == rightValue {
 		// d.Display("DISPLAY \"OK\"")
-
 		thenAction := strings.Split(thenSplit[1], "END")
 		thenActionTrimmed := strings.TrimSpace(thenAction[0])
 
@@ -85,7 +112,6 @@ func (d *Data) IfBlock(val string) {
 		//like this: execute("DISPLAY VAR1")
 
 		if strings.Contains(thenActionTrimmed, "DISPLAY") {
-			log.Println(thenActionTrimmed)
 			d.Display(thenActionTrimmed)
 		}
 

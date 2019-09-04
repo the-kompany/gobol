@@ -27,6 +27,12 @@ func ValidIfBlock(val string) bool {
 		return false
 	}
 
+	ifTokens := strings.Split(val, " ")
+
+	if ifTokens[2] != "=" {
+		return false
+	}
+
 	//steps for if block
 	//boolean
 	// equal to

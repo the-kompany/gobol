@@ -1,23 +1,22 @@
 OPEN("test.csv") AS file_handle
 
 RECORD MYTHING
-   DATE
    Title2 
    Title3 
+   DATE
 END-RECORD
 
-PERFORM READ file_handle INTO MYTHING AS CSV
+  PERFORM READ file_handle INTO MYTHING AS CSV
  
-  DISPLAY "hello"
+DISPLAY "hello"
+ 
 
-  IF MYTHING.Title2 = "two" THEN 
+IF MYTHING.Title2 = "two" then 
 
-  MOVE FMTDATE(MYTHING.DATE, "mm-dd-yyyy", "mm/dd/yy") TO MYTHING.DATE
-
-  END-IF
-
-
-  WRITE MYTHING TO "output.csv" as CSV 
+  MOVE FMTDATE(MYTHING.DATE, "mm-dd-yyyy", "mm/dd/yy") TO MYTHING.DATE 
+END-IF
+  
+WRITE MYTHING TO "output.csv" as CSV 
 
 
 END-PERFORM 

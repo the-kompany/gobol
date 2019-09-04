@@ -36,15 +36,17 @@ func main() {
 
 	fileName := os.Args[1]
 
+	var extension = filepath.Ext(fileName)
+
+	if extension != ".gbl" {
+		fmt.Printf("%s\n", "not a valid gobol file")
+		os.Exit(1)
+	}
+
 	f, err := os.Open(fileName)
 
 	if err != nil {
 		log.Fatal(err)
-	}
-	var extension = filepath.Ext("hello.gbl")
-
-	if extension != ".gbl" {
-		fmt.Printf("%s", "not a valid gobol file")
 	}
 
 	scanner := bufio.NewScanner(f)
@@ -91,14 +93,16 @@ func main() {
 		}
 
 		// check if the string contains IF condition block
-		if strings.HasPrefix(strings.ToLower(l), "if") {
-			ifStart = true
-			ifBlock += l
-			continue
+		if performstart == false {
+			if strings.HasPrefix(strings.ToLower(trimmed), "if") {
+				ifStart = true
+				ifBlock += l
+				continue
+			}
 		}
 
 		if ifStart == true {
-			if strings.HasPrefix(strings.ToLower(l), "end-if") {
+			if strings.HasPrefix(strings.ToLower(trimmed), "end-if") {
 				ifStart = false
 				ifBlock += l
 				d.Lines = append(d.Lines, handler.Token{Value: ifBlock, Line: lineNumber})
@@ -110,7 +114,8 @@ func main() {
 			continue
 		}
 
-		if strings.HasPrefix(strings.ToLower(l), "perform") {
+		if strings.HasPrefix(strings.ToLower(trimmed), "perform") {
+
 			performstart = true
 			performBlock += " " + l + "\n"
 			continue
@@ -118,7 +123,7 @@ func main() {
 
 		if performstart == true {
 
-			if strings.HasPrefix(strings.ToLower(l), "end-perform") {
+			if strings.HasPrefix(strings.ToLower(trimmed), "end-perform") {
 				performstart = false
 				performBlock += " " + l
 				d.Lines = append(d.Lines, handler.Token{Value: performBlock, Line: lineNumber})
@@ -181,6 +186,7 @@ func main() {
 
 		switch firstToken {
 		case "perform":
+
 			if tokens, err := parser.ValidPerformBlock(v.Value); err != nil {
 				fmt.Println("Syntax error: invalid PERFORM block at line ", v.Line)
 				os.Exit(1)
